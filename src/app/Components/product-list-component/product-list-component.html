@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h2>Products</h2>
+  <a routerLink="/admin/products/new" class="btn-primary">+ Add Product</a>
+</div>
+
+<table>
+  <thead>
+    <tr><th>Image</th><th>Name</th><th>Brand</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of products">
+      <td><img [src]="p.imageUrl || 'https://placehold.co/60x60?text=No+Image'" alt="{{ p.name }}" class="product-thumb" /></td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.brandName }}</td>
+      <td>{{ p.categoryName }}</td>
+      <td>{{ p.price | currency }}</td>
+      <td>{{ p.stock }}</td>
+      <td>{{ p.isActive ? 'Active' : 'Inactive' }}</td>
+      <td><span class="badge" [ngClass]="p.isActive ? 'b-active' : 'b-inactive'">{{ p.isActive ? 'Active' : 'Inactive' }}</span></td>
+      <td>
+        <a [routerLink]="['/admin/products/edit', p.id]">Edit</a>
+        <button (click)="deleteProduct(p.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

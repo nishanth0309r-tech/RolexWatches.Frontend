@@ -1,0 +1,8 @@
+<h2>Reviews</h2>
+<div *ngFor="let r of reviews" class="review-card">
+  <p><strong>{{ r.productName }}</strong> — {{ r.rating }}★</p>
+  <p><strong>{{ r.productName }}</strong> &nbsp;<span style="color: var(--gold-500);">{{ '★'.repeat(r.rating) }}</span></p>
+  <p>{{ r.comment }}</p>
+  <small>by {{ r.customerName }} on {{ r.createdAt | date:'short' }}</small>
+  <button (click)="deleteReview(r.id)">Remove</button>
+</div>

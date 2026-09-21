@@ -1,2 +1,47 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import "ngx-toastr/toastr";
+
+:root {
+  --navy-950: #0b1220;
+  --navy-900: #10182b;
+  --gold-500: #c9a24b;
+  --gold-600: #b08d3e;
+  --paper: #f7f5f1;
+  --ink-900: #1c2130;
+  --ink-600: #5b6376;
+  --ink-400: #9aa2b3;
+  --line: #e6e2d8;
+  --card: #ffffff;
+  --green-bg: #e7f3ea; --green-fg: #1f6b3f;
+  --amber-bg: #fbf0d9; --amber-fg: #92650c;
+  --blue-bg: #e6edfa;  --blue-fg: #2a4a8f;
+  --indigo-bg:#ece7fb; --indigo-fg:#4633a0;
+  --red-bg:   #fae7e6; --red-fg:   #9c2f28;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink-900);
+  font-family: 'Inter', -apple-system, Segoe UI, sans-serif;
+}
+
+h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+.btn-primary {
+  background: var(--gold-500);
+  color: #2a2109;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+.btn-primary:hover { background: var(--gold-600); }

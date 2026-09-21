@@ -1,16 +1,24 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
+
+import { appRoutes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
-import { routes } from './app.routes';
-import { authInterceptor } from './interceptors/auth-interceptor';
+import { provideToastr } from 'ngx-toastr';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(appRoutes),
+    provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimations(),
-    importProvidersFrom(ToastrModule.forRoot({ timeOut: 3000, positionClass: 'toast-top-right', preventDuplicates: true })),
-  ],
+    provideAnimationsAsync(),
+    provideToastr({
+      timeOut: 5000,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true
+    })
+  ]
 };

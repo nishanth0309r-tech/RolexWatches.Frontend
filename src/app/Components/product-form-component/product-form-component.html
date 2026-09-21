@@ -1,0 +1,45 @@
+<h2>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label>Name</label>
+  <input formControlName="name" />
+
+  <label>Description</label>
+  <textarea formControlName="description"></textarea>
+
+  <label>Price</label>
+  <input type="number" formControlName="price" />
+
+  <label>Discount Price</label>
+  <input type="number" formControlName="discountPrice" />
+
+  <label>Stock</label>
+  <input type="number" formControlName="stock" />
+
+  <label>Image URL</label>
+  <input formControlName="imageUrl" />
+
+  <img *ngIf="form.get('imageUrl')?.value"
+       [src]="form.get('imageUrl')?.value"
+       alt="Preview"
+       class="image-preview"
+       (error)="onImageError($event)" />
+
+  <label>Brand</label>
+  <select formControlName="brandId">
+    <option [value]="null" disabled>Select Brand</option>
+    <option *ngFor="let b of brands" [value]="b.id">{{ b.name }}</option>
+  </select>
+
+  <label>Category</label>
+  <select formControlName="categoryId">
+    <option [value]="null" disabled>Select Category</option>
+    <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+  </select>
+
+  <label *ngIf="isEditMode">
+    <input type="checkbox" formControlName="isActive" /> Active
+  </label>
+
+  <button type="submit">{{ isEditMode ? 'Update' : 'Create' }}</button>
+</form>
