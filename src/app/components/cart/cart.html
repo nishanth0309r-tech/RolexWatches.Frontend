@@ -1,0 +1,50 @@
+<div class="container py-4">
+  <h2 class="mb-4">My Cart</h2>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading">
+    <table class="table align-middle" *ngIf="items.length > 0">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td class="d-flex align-items-center gap-2">
+            <img [src]="item.imageUrl" width="50" height="50" style="object-fit: cover;">
+            {{ item.productName }}
+          </td>
+          <td>${{ item.price }}</td>
+          <td style="width: 100px;">
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              [value]="item.quantity"
+              min="1"
+              (change)="updateQuantity(item, +$any($event.target).value)"
+            />
+          </td>
+          <td>${{ item.total }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" (click)="remove(item)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="items.length > 0">
+      <h4>Total: ${{ grandTotal }}</h4>
+      <button class="btn btn-primary" (click)="goToCheckout()">Proceed to Checkout</button>
+    </div>
+
+    <p *ngIf="items.length === 0" class="text-muted">Your cart is empty.</p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="container py-4">
+  <h2 class="mb-4">My Orders</h2>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <table class="table" *ngIf="!loading && orders.length > 0">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.createdAt | date:'medium' }}</td>
+        <td>${{ order.totalAmount }}</td>
+        <td><span class="badge bg-secondary">{{ order.status }}</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && orders.length === 0" class="text-muted">You have no orders yet.</p>
+</div>

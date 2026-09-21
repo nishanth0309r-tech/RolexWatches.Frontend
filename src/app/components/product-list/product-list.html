@@ -1,0 +1,24 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All Products</h2>
+    <input
+      type="text"
+      class="form-control w-25"
+      placeholder="Search products..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+    />
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="row g-4" *ngIf="!loading">
+    <div class="col-md-3" *ngFor="let product of filteredProducts">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && filteredProducts.length === 0" class="text-muted">No products match your search.</p>
+</div>

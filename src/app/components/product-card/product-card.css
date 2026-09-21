@@ -1,0 +1,25 @@
+.tilt-card {
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+}
+
+.tilt-card img {
+  transition: transform 0.4s ease;
+}
+
+.tilt-card:hover img {
+  transform: scale(1.08);
+}
+
+.btn-pulse {
+  transition: transform 0.15s ease;
+}
+
+.btn-pulse:active {
+  transform: scale(0.92);
+}

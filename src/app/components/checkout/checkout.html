@@ -1,0 +1,38 @@
+<div class="container py-4">
+  <h2 class="mb-4">Checkout</h2>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="row" *ngIf="!loading">
+    <div class="col-md-7">
+      <h5>Shipping Details</h5>
+      <div class="mb-3">
+        <label class="form-label">Address</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="shippingAddress"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input type="text" class="form-control" [(ngModel)]="phoneNumber">
+      </div>
+      <button class="btn btn-primary" (click)="placeOrder()" [disabled]="placingOrder">
+        {{ placingOrder ? 'Placing Order...' : 'Place Order' }}
+      </button>
+    </div>
+
+    <div class="col-md-5">
+      <h5>Order Summary</h5>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between" *ngFor="let item of items">
+          {{ item.productName }} x{{ item.quantity }}
+          <span>${{ item.total }}</span>
+        </li>
+      </ul>
+      <h5 class="d-flex justify-content-between">
+        <span>Total</span>
+        <span>${{ grandTotal }}</span>
+      </h5>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+<!-- HERO BANNER CAROUSEL -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" [style.background]="banner.bg">
+      <div class="banner-content">
+        <h1>{{ banner.title }}</h1>
+        <p>{{ banner.subtitle }}</p>
+        <a routerLink="/products" class="btn btn-light btn-lg">{{ banner.cta }}</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<!-- CATEGORY STRIP -->
+<div class="container py-4">
+  <div class="category-strip">
+    <div class="category-card" *ngFor="let cat of categories" routerLink="/products">
+      <i class="bi" [ngClass]="cat.icon"></i>
+      <span>{{ cat.name }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST BADGES -->
+<div class="trust-strip">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-6 col-md-3">
+        <i class="bi bi-truck"></i>
+        <p>Free Shipping</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <i class="bi bi-shield-check"></i>
+        <p>2-Year Warranty</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <i class="bi bi-arrow-return-left"></i>
+        <p>Easy Returns</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <i class="bi bi-headset"></i>
+        <p>24/7 Support</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="container py-5" *ngIf="loading">
+  <div class="row g-4">
+    <div class="col-6 col-md-3" *ngFor="let s of [1,2,3,4]">
+      <div class="skeleton-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TODAY'S DEALS -->
+<div class="container py-4" *ngIf="!loading && dealProducts.length > 0">
+  <div class="section-header">
+    <h3><i class="bi bi-lightning-charge-fill text-warning"></i> Today's Deals</h3>
+    <a routerLink="/products" class="see-all">See all &rarr;</a>
+  </div>
+  <div class="row g-4" [@staggerFadeIn]="dealProducts.length">
+    <div class="col-6 col-md-3" *ngFor="let product of dealProducts">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<div class="container py-4" *ngIf="!loading">
+  <div class="section-header">
+    <h3>Featured Watches</h3>
+    <a routerLink="/products" class="see-all">See all &rarr;</a>
+  </div>
+  <div class="row g-4" [@staggerFadeIn]="products.length">
+    <div class="col-6 col-md-3" *ngFor="let product of products">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+  </div>
+  <p *ngIf="products.length === 0" class="text-muted">No products found.</p>
+</div>

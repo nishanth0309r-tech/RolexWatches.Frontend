@@ -1,0 +1,25 @@
+<div class="container py-4">
+  <h2 class="mb-4">My Wishlist</h2>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="row g-3" *ngIf="!loading">
+    <div class="col-md-4" *ngFor="let item of items">
+      <div class="card h-100">
+        <img [src]="item.imageUrl" class="card-img-top" style="height: 180px; object-fit: cover;">
+        <div class="card-body">
+          <h6>{{ item.productName }}</h6>
+          <p class="fw-bold">${{ item.price }}</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" (click)="moveToCart(item)">Move to Cart</button>
+            <button class="btn btn-outline-secondary btn-sm" (click)="remove(item.productId)">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && items.length === 0" class="text-muted">Your wishlist is empty.</p>
+</div>
