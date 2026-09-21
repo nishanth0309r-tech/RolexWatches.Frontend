@@ -1,0 +1,30 @@
+<div class="dashboard-header">
+  <h2>Dashboard</h2>
+  <p class="subtitle">Welcome back — here's what's happening today</p>
+</div>
+
+<div *ngIf="loading" class="loading-state">Loading dashboard...</div>
+
+<div *ngIf="summary" class="dashboard-grid">
+  <div class="stat-card"><div class="stat-icon">📦</div><div><h3>Total Products</h3><p>{{ summary.totalProducts }}</p></div></div>
+  <div class="stat-card"><div class="stat-icon">🧾</div><div><h3>Total Orders</h3><p>{{ summary.totalOrders }}</p></div></div>
+  <div class="stat-card"><div class="stat-icon">👥</div><div><h3>Total Customers</h3><p>{{ summary.totalCustomers }}</p></div></div>
+  <div class="stat-card"><div class="stat-icon">💰</div><div><h3>Total Revenue</h3><p>{{ summary.totalRevenue | currency }}</p></div></div>
+
+  <div class="recent-orders">
+    <h3>Recent Orders</h3>
+    <table *ngIf="summary.recentOrders.length > 0">
+      <thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let order of summary.recentOrders">
+          <td>#{{ order.orderId }}</td>
+          <td>{{ order.customerName }}</td>
+          <td>{{ order.total | currency }}</td>
+          <td><span class="status-badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span></td>
+          <td>{{ order.createdAt | date:'mediumDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="summary.recentOrders.length === 0" class="empty-state">No orders yet</p>
+  </div>
+</div>

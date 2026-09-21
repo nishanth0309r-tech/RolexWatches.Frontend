@@ -1,0 +1,17 @@
+<h2>Orders</h2>
+<table>
+  <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+  <tbody>
+    <tr *ngFor="let o of orders">
+      <td>{{ o.id }}</td>
+      <td>{{ o.customerName }}</td>
+      <td>{{ o.totalAmount | currency }}</td>
+      <td>
+        <select [(ngModel)]="o.status" (change)="changeStatus(o, o.status)">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </td>
+      <td>{{ o.createdAt | date:'short' }}</td>
+    </tr>
+  </tbody>
+</table>

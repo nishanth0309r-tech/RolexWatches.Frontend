@@ -1,0 +1,5 @@
+h2 { margin-bottom: 16px; }
+.review-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+.review-card p { margin: 6px 0; font-size: 0.89rem; }
+.review-card small { color: var(--ink-600); font-size: 0.78rem; }
+.review-card button { margin-top: 10px; background: var(--red-bg); color: var(--red-fg); border: none; border-radius: 7px; padding: 6px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
