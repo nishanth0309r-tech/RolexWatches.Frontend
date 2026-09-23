@@ -2,10 +2,10 @@ import { Component, Input, HostListener, ElementRef, Inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart';
 import { WishlistService } from '../../services/wishlist';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth-service';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-product-card',
@@ -21,7 +21,7 @@ export class ProductCard {
   constructor(
     private cartService: CartService,
     private wishlistService: WishlistService,
-    private authService: Auth,
+    private authService: AuthService,
     @Inject(ToastrService) private toastr: ToastrService,
     private el: ElementRef
   ) {}

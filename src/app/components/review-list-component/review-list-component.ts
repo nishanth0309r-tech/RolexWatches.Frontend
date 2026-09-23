@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { ReviewService } from '../../Services/review-service';
-import { Review } from '../../Models/review';
+import { ReviewService } from '../../services/review-service';
+import { Review } from '../../models/review';
+
 
 @Component({
   selector: 'app-review-list-component',

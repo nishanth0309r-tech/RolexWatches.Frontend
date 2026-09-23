@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { OrderService } from '../../Services/order-service';
-import { Order } from '../../Models/order';
+import { OrderService } from '../../services/order-service';
+import { Order } from '../../models/order';
 
 @Component({
   selector: 'app-order-list-component',

@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { CustomerService } from '../../Services/customer-service';
-import { Customer } from '../../Models/customer';
+import { CustomerService } from '../../services/customer-service';
+import { Customer } from '../../models/customer';
 
 @Component({
   selector: 'app-customer-list-component',

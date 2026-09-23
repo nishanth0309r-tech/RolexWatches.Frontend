@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Product } from '../../models/product.model';
-import { ProductService } from '../../services/product';
+
 import { CartService } from '../../services/cart';
 import { WishlistService } from '../../services/wishlist';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth-service';
+import { Product } from '../../models/product';
+import { ProductService } from '../../services/product-service';
 
 @Component({
   selector: 'app-product-details',
@@ -26,7 +27,7 @@ export class ProductDetails implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private wishlistService: WishlistService,
-    private authService: Auth,
+    private authService: AuthService,
     private toastr: ToastrService
   ) {}
 

@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ProductService } from '../../Services/product-service';
-import { BrandService } from '../../Services/brand-service';
-import { CategoryService } from '../../Services/category-service';
-import { Category } from '../../Models/category';
-import { Brand } from '../../Models/brand';
+import { ProductService } from '../../services/product-service';
+import { BrandService } from '../../services/brand-service';
+import { CategoryService } from '../../services/category-service';
+import { Category } from '../../models/category';
+import { Brand } from '../../models/brand';
 
 @Component({
   selector: 'app-product-form-component',

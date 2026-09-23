@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Product } from '../../models/product.model';
-import { ProductService } from '../../services/product';
+import { ProductService } from '../../services/product-service';
 import { ProductCard } from '../product-card/product-card';
 import { staggerFadeIn } from '../../animations/list-animations';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-home',

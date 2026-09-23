@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ProductService } from '../../Services/product-service';
+import { ProductService } from '../../services/product-service';
 import { Product } from '../../models/product';
 import { ToastrService } from 'ngx-toastr';
 

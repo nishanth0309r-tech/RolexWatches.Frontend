@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { DashboardSummary } from '../Models/dashboard';
+import { DashboardSummary } from '../models/dashboard';
+
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {

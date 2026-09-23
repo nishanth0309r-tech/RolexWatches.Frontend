@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { DashboardSummary } from '../../Models/dashboard';
-import { DashboardService } from '../../Services/dashboard-service';
+import { DashboardSummary } from '../../models/dashboard';
+import { DashboardService } from '../../services/dashboard-service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

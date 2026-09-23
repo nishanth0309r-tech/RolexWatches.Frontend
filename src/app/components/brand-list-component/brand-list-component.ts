@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { BrandService } from '../../Services/brand-service';
-import { Brand } from '../../Models/brand';
+import { BrandService } from '../../services/brand-service';
+import { Brand } from '../../models/brand';
 
 @Component({
   selector: 'app-brand-list-component',

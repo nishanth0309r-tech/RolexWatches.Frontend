@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse, AuthResponse, LoginRequest, RegisterRequest, UserDto } from '../Models/auth-models';
+import { ApiResponse, AuthResponse, LoginRequest, RegisterRequest, UserDto } from '../models/auth-models';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 const TOKEN_KEY = 'watchhub_token';

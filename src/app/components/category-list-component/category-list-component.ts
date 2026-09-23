@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { CategoryService } from '../../Services/category-service';
-import { Category } from '../../Models/category';
+import { CategoryService } from '../../services/category-service';
+import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-category-list-component',
