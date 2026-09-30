@@ -1,33 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { OrderService } from '../../services/order-service';
+import { MyOrder } from '../../models/order';
 
-interface OrderSummary {
-  id: number;
-  createdAt: string;
-  totalAmount: number;
-  status: string;
-}
+
+const STATUS_LABELS = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'];
 
 @Component({
   selector: 'app-orders',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [RouterLink, CurrencyPipe, DatePipe],
   templateUrl: './orders.html',
   styleUrl: './orders.css'
 })
 export class Orders implements OnInit {
-  orders: OrderSummary[] = [];
-  loading = true;
+  private orderService = inject(OrderService);
 
-  constructor(private http: HttpClient) {}
+  orders = signal<MyOrder[]>([]);
+  loading = signal(true);
 
   ngOnInit(): void {
-    // NOTE: adjust route to match Member 1's actual "my orders" endpoint.
-    this.http.get<OrderSummary[]>(`${environment.apiUrl}/Order/my-orders`).subscribe({
-      next: (data) => { this.orders = data; this.loading = false; },
-      error: () => { this.loading = false; }
+    this.orderService.getMyOrders().subscribe({
+      next: orders => { this.orders.set(orders); this.loading.set(false); },
+      error: () => this.loading.set(false)
     });
+  }
+
+  statusLabel(status: number | string): string {
+    return typeof status === 'number' ? STATUS_LABELS[status] ?? 'Unknown' : status;
   }
 }

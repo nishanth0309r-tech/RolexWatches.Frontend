@@ -6,7 +6,7 @@ import { Brand } from '../models/brand';
 
 @Injectable({ providedIn: 'root' })
 export class BrandService {
-  private baseUrl = `${environment.apiUrl}/admin/brands`;
+  private baseUrl = `${environment.apiUrl}/brands`;
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Brand[]>

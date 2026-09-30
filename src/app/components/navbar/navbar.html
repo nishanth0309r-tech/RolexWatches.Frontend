@@ -1,17 +1,42 @@
 <header class="topbar">
-  <div class="brand">
-    <span class="mark">Rolex<em>Watches</em> Admin</span>
-  </div>
+  <a routerLink="/home" class="brand">
+    <span class="mark">Watch<em>Hub</em></span>
+  </a>
+
   <nav class="tabs">
-    
-    <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/admin/products" routerLinkActive="active">Products</a>
-    <a routerLink="/admin/cart" routerLinkActive="active">Cart</a>
-    <a routerLink="/admin/wishlist" routerLinkActive="active">Wishlist</a>
-    <a routerLink="/admin/brands" routerLinkActive="active">Brands</a>
-    <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
-    <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
-    <a routerLink="/admin/customers" routerLinkActive="active">Customers</a>
-    <a routerLink="/admin/reviews" routerLinkActive="active">Reviews</a>
+    <a routerLink="/home" routerLinkActive="active">Home</a>
+    <a routerLink="/product-list" routerLinkActive="active">Shop</a>
+
+    @if (auth.currentUser(); as user) {
+      @if (user.role === 'Admin') {
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/admin/brands" routerLinkActive="active">Brands</a>
+        <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
+        <a routerLink="/admin/customers" routerLinkActive="active">Customers</a>
+        <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
+        <a routerLink="/admin/reviews" routerLinkActive="active">Reviews</a>
+      } @else {
+        <a routerLink="/wishlist" routerLinkActive="active">Wishlist</a>
+        <a routerLink="/orders" routerLinkActive="active">My Orders</a>
+        <a routerLink="/cart" routerLinkActive="active">
+          Cart
+          @if ((cart.cartCount$ | async); as count) {
+            <span class="badge">{{ count }}</span>
+          }
+        </a>
+      }
+    }
   </nav>
+
+  <div class="account">
+    @if (auth.currentUser(); as user) {
+      <span class="user-name">{{ user.fullName }}</span>
+      <button type="button" class="logout-btn" (click)="auth.logout()">Logout</button>
+    } @else {
+      <div class="tabs">
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+        <a routerLink="/register" routerLinkActive="active">Register</a>
+      </div>
+    }
+  </div>
 </header>

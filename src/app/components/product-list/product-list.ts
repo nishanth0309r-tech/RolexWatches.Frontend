@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product-service';
@@ -13,28 +13,28 @@ import { Product } from '../../models/product';
   styleUrl: './product-list.css'
 })
 export class ProductList implements OnInit {
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
-  loading = true;
-  searchTerm = '';
+  products=signal<Product[]>([]);
+  filteredProducts=signal<Product[]>([]);
+  loading = signal(true);
+  searchTerm = signal('');
 
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
       next: (data) => {
-        this.products = data;
-        this.filteredProducts = data;
-        this.loading = false;
+        this.products.set(data);
+        this.filteredProducts.set(data);
+        this.loading.set(false);
       },
-      error: () => { this.loading = false; }
+      error: () => { this.loading.set(false); }
     });
   }
 
   onSearch(): void {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredProducts = this.products.filter(p =>
+    const term = this.searchTerm().toLowerCase();
+    this.filteredProducts.set(this.products().filter(p =>
       p.name.toLowerCase().includes(term)
-    );
+    ));
   }
 }

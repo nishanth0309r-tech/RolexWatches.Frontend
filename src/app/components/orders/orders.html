@@ -1,4 +1,4 @@
-<div class="container py-4">
+<!-- <div class="container py-4">
   <h2 class="mb-4">My Orders</h2>
 
   <div *ngIf="loading" class="text-center py-5">
@@ -25,4 +25,41 @@
   </table>
 
   <p *ngIf="!loading && orders.length === 0" class="text-muted">You have no orders yet.</p>
-</div>
+</div> -->
+
+<section class="page">
+  <h1>My Orders</h1>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (orders().length === 0) {
+    <div class="empty">
+      <p>You haven't placed any orders yet.</p>
+      <a routerLink="/product-list" class="btn">Start shopping</a>
+    </div>
+  } @else {
+    @for (order of orders(); track order.id) {
+      <article class="order-card">
+        <header>
+          <div>
+            <strong>Order #{{ order.id }}</strong>
+            <small>{{ order.orderDate | date: 'mediumDate' }}</small>
+          </div>
+          <span class="status">{{ statusLabel(order.status) }}</span>
+        </header>
+
+        @for (item of order.items; track item.productId) {
+          <div class="line">
+            <span>{{ item.productName }} × {{ item.quantity }}</span>
+            <span>{{ item.lineTotal | currency }}</span>
+          </div>
+        }
+
+        <footer>
+          <small>Ship to: {{ order.shippingAddress }}</small>
+          <strong>{{ order.totalAmount | currency }}</strong>
+        </footer>
+      </article>
+    }
+  }
+</section>

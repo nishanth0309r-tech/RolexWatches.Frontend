@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { DashboardSummary } from '../../models/dashboard';
 import { DashboardService } from '../../services/dashboard-service';
 import { ToastrService } from 'ngx-toastr';
@@ -14,13 +14,15 @@ export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private toastr = inject(ToastrService);
 
-  summary?: DashboardSummary;
-  loading = true;
+  // summary?: DashboardSummary;
+  // loading = true;
+  summary = signal<DashboardSummary | undefined>(undefined);
+  loading = signal(true);
 
   ngOnInit(): void {
     this.dashboardService.getSummary().subscribe({
-      next: (data) => { this.summary = data; this.loading = false; },
-      error: () => { this.toastr.error('Failed to load dashboard'); this.loading = false; }
+      next: (data) => { this.summary.set(data); this.loading.set(false); },
+      error: () => { this.toastr.error('Failed to load dashboard'); this.loading.set(false); }
     });
   }
 }

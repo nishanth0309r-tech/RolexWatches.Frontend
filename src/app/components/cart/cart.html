@@ -1,50 +1,37 @@
-<div class="container py-4">
-  <h2 class="mb-4">My Cart</h2>
+<section class="page">
+  <h1>Your Cart</h1>
 
-  <div *ngIf="loading" class="text-center py-5">
-    <div class="spinner-border" role="status"></div>
-  </div>
-
-  <div *ngIf="!loading">
-    <table class="table align-middle" *ngIf="items.length > 0">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Total</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of items">
-          <td class="d-flex align-items-center gap-2">
-            <img [src]="item.imageUrl" width="50" height="50" style="object-fit: cover;">
-            {{ item.productName }}
-          </td>
-          <td>${{ item.price }}</td>
-          <td style="width: 100px;">
-            <input
-              type="number"
-              class="form-control form-control-sm"
-              [value]="item.quantity"
-              min="1"
-              (change)="updateQuantity(item, +$any($event.target).value)"
-            />
-          </td>
-          <td>${{ item.total }}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-danger" (click)="remove(item)">Remove</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="items.length > 0">
-      <h4>Total: ${{ grandTotal }}</h4>
-      <button class="btn btn-primary" (click)="goToCheckout()">Proceed to Checkout</button>
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (items().length === 0) {
+    <div class="empty">
+      <p>Your cart is empty.</p>
+      <a routerLink="/product-list" class="btn">Browse watches</a>
+    </div>
+  } @else {
+    <div class="rows">
+      @for (item of items(); track item.id) {
+        <div class="row">
+          <img [src]="item.imageUrl" [alt]="item.productName" />
+          <div class="info">
+            <h3>{{ item.productName }}</h3>
+            <p>{{ item.price | currency }}</p>
+          </div>
+          <div class="qty">
+            <button type="button" (click)="updateQuantity(item, -1)" [disabled]="item.quantity <= 1">−</button>
+            <span>{{ item.quantity }}</span>
+            <button type="button" (click)="updateQuantity(item, 1)">+</button>
+          </div>
+          <strong class="line">{{ item.price * item.quantity | currency }}</strong>
+          <button type="button" class="link-danger" (click)="remove(item)">Remove</button>
+        </div>
+      }
     </div>
 
-    <p *ngIf="items.length === 0" class="text-muted">Your cart is empty.</p>
-  </div>
-</div>
+    <div class="summary">
+      <span>Total</span>
+      <strong>{{ total() | currency }}</strong>
+      <a routerLink="/checkout" class="btn primary">Proceed to checkout</a>
+    </div>
+  }
+</section>

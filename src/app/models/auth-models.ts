@@ -24,7 +24,6 @@ export interface AuthResponse {
   user: UserDto;
 }
 
-// Matches the backend's ApiResponse<T> wrapper (Security/Common module)
 export interface ApiResponse<T> {
   success: boolean;
   message?: string;

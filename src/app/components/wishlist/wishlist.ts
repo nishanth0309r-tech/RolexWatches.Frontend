@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { WishlistItem } from '../../models/wishlist.model';
@@ -14,8 +14,8 @@ import { CartService } from '../../services/cart';
   styleUrl: './wishlist.css'
 })
 export class Wishlist implements OnInit {
-  items: WishlistItem[] = [];
-  loading = true;
+  items=signal<WishlistItem[]>([]);
+  loading = signal(true);
 
   constructor(
     private wishlistService: WishlistService,
@@ -29,15 +29,15 @@ export class Wishlist implements OnInit {
 
   loadWishlist(): void {
     this.wishlistService.getWishlist().subscribe({
-      next: (data) => { this.items = data; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => { this.items.set(data); this.loading.set(false); },
+      error: () => { this.loading.set(false); }
     });
   }
 
   remove(productId: number): void {
     this.wishlistService.removeFromWishlist(productId).subscribe({
       next: () => {
-        this.items = this.items.filter(i => i.productId !== productId);
+        this.items.set(this.items().filter(i => i.productId !== productId));
         this.toastr.info('Removed from wishlist.');
       },
       error: () => this.toastr.error('Could not remove item.')

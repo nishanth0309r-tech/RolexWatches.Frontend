@@ -1,78 +1,36 @@
 import { Routes } from '@angular/router';
-import { Home } from './components/home/home';
-import { ProductList } from './components/product-list/product-list';
-import { ProductDetails } from './components/product-details/product-details';
-import { Wishlist } from './components/wishlist/wishlist';
-import { Cart } from './components/cart/cart';
-import { Checkout } from './components/checkout/checkout';
-import { Orders } from './components/orders/orders';
-import { Login } from './components/login/login';
-import { Register } from './components/register/register';
-import { DashboardComponent } from './components/dashboard-component/dashboard-component';
-import { ProductListComponent } from './components/product-list-component/product-list-component';
-import { ProductFormComponent } from './components/product-form-component/product-form-component';
-import { BrandListComponent } from './components/brand-list-component/brand-list-component';
-import { CategoryListComponent } from './components/category-list-component/category-list-component';
-import { OrderListComponent } from './components/order-list-component/order-list-component';
-import { CustomerListComponent } from './components/customer-list-component/customer-list-component';
-import { ReviewListComponent } from './components/review-list-component/review-list-component';
-
-// export const routes: Routes = [
- 
-//   { path: 'products', component: ProductList },
-  
-
-// ];
-  // Example protected route:
-  // {
-  //   path: 'dashboard',
-  //   loadComponent: () => import('./Components/dashboard/dashboard.component').then(m => m.DashboardComponent),
-  //   canActivate: [authGuard]
-  // }
-
-  // Example admin-only route:
-  // {
-  //   path: 'admin/dashboard',
-  //   loadComponent: () => import('./Components/admin/admin-dashboard.component').then(m => m.AdminDashboardComponent),
-  //   canActivate: [adminGuard]
-  // }
-// import { authGuard } from './guards/auth.guard';
-// import { Routes } from "@angular/router";
-// import { adminGuard } from "./guards/admin-guard";
-// import { BrandListComponent } from "./Components/brand-list-component/brand-list-component";
-// import { CategoryListComponent } from "./Components/category-list-component/category-list-component";
-// import { CustomerListComponent } from "./Components/customer-list-component/customer-list-component";
-// import { DashboardComponent } from "./Components/dashboard-component/dashboard-component";
-// import { OrderListComponent } from "./Components/order-list-component/order-list-component";
-// import { ProductFormComponent } from "./Components/product-form-component/product-form-component";
-// import { ProductListComponent } from "./Components/product-list-component/product-list-component";
-// import { ReviewListComponent } from "./Components/review-list-component/review-list-component";
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const appRoutes: Routes = [
+  // ---- Public ----
+  { path: 'home', loadComponent: () => import('./components/home/home').then(m => m.Home) },
+  { path: 'login', loadComponent: () => import('./components/login/login').then(m => m.Login) },
+  { path: 'register', loadComponent: () => import('./components/register/register').then(m => m.Register) },
+  { path: 'product-list', loadComponent: () => import('./components/product-list/product-list').then(m => m.ProductList) },
+  { path: 'product-details/:id', loadComponent: () => import('./components/product-details/product-details').then(m => m.ProductDetails) },
+
+  // ---- Logged-in users (customers, and admins too) ----
+  { path: 'cart', canActivate: [authGuard], loadComponent: () => import('./components/cart/cart').then(m => m.Cart) },
+  { path: 'checkout', canActivate: [authGuard], loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout) },
+  { path: 'wishlist', canActivate: [authGuard], loadComponent: () => import('./components/wishlist/wishlist').then(m => m.Wishlist) },
+  { path: 'orders', canActivate: [authGuard], loadComponent: () => import('./components/orders/orders').then(m => m.Orders) },
+
+  // ---- Admin only: one guard on the parent covers every child ----
   {
     path: 'admin',
-    // canActivate: [adminGuard],   // ← re-enable once Member 1's /login route exists
+    canActivate: [adminGuard],
     children: [
-      { path: '', component: Home },
-      // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
-      { path: 'products', component: ProductListComponent },
-      { path: 'products/new', component: ProductFormComponent },
-      { path: 'products/edit/:id', component: ProductFormComponent },
-      { path: 'brands', component: BrandListComponent },
-      { path: 'categories', component: CategoryListComponent },
-      { path: 'orders', component: OrderListComponent },
-      { path: 'customers', component: CustomerListComponent },
-      { path: 'reviews', component: ReviewListComponent },
-      { path: 'product/:id', component: ProductDetails },
-      { path: 'wishlist', component: Wishlist },
-      { path: 'cart', component: Cart },
-      { path: 'checkout', component: Checkout },
-      { path: 'orders', component: Orders },
-      { path: 'login', component: Login },
-      { path: 'register', component: Register },
-       
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', loadComponent: () => import('./components/dashboard-component/dashboard-component').then(m => m.DashboardComponent) },
+      { path: 'customers', loadComponent: () => import('./components/customer-list-component/customer-list-component').then(m => m.CustomerListComponent) },
+      { path: 'brands', loadComponent: () => import('./components/brand-list-component/brand-list-component').then(m => m.BrandListComponent) },
+      { path: 'categories', loadComponent: () => import('./components/category-list-component/category-list-component').then(m => m.CategoryListComponent) },
+      { path: 'orders', loadComponent: () => import('./components/order-list-component/order-list-component').then(m => m.OrderListComponent) },
+      { path: 'reviews', loadComponent: () => import('./components/review-list-component/review-list-component').then(m => m.ReviewListComponent) },
     ]
   },
-  { path: '', redirectTo: 'admin/dashboard', pathMatch: 'full' }
+
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'home' }
 ];

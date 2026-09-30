@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, computed, OnInit, signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CartItem } from '../../models/cart.model';
 import { CartService } from '../../services/cart';
@@ -8,13 +8,16 @@ import { CartService } from '../../services/cart';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CurrencyPipe,RouterLink],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
 })
 export class Cart implements OnInit {
-  items: CartItem[] = [];
-  loading = true;
+   
+
+  items = signal<CartItem[]>([]);
+  loading = signal(true);
+  total = computed(() => this.items().reduce((sum, i) => sum + i.price * i.quantity, 0));
 
   constructor(
     private cartService: CartService,
@@ -28,8 +31,8 @@ export class Cart implements OnInit {
 
   loadCart(): void {
     this.cartService.getCart().subscribe({
-      next: (data) => { this.items = data; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => { this.items.set(data); this.loading.set(false); },
+      error: () => { this.loading.set(false); }
     });
   }
 
@@ -47,15 +50,15 @@ export class Cart implements OnInit {
   remove(item: CartItem): void {
     this.cartService.removeFromCart(item.id).subscribe({
       next: () => {
-        this.items = this.items.filter(i => i.id !== item.id);
+        this.items.set(this.items().filter(i => i.id !== item.id));
         this.toastr.info('Item removed from cart.');
       },
       error: () => this.toastr.error('Could not remove item.')
     });
   }
 
-  get grandTotal(): number {
-    return this.items.reduce((sum, item) => sum + item.total, 0);
+  getgrandTotal(): number {
+    return this.items().reduce((sum, item) => sum + item.total, 0);
   }
 
   goToCheckout(): void {

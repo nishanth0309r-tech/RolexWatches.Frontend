@@ -6,7 +6,7 @@ import { Category } from '../models/category';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private baseUrl = `${environment.apiUrl}/admin/categories`;
+  private baseUrl = `${environment.apiUrl}/categories`;
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Category[]> { return this.http.get<Category[]>(this.baseUrl); }
