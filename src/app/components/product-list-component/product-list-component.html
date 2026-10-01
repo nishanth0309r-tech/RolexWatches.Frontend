@@ -9,7 +9,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let p of products">
-      <td><img [src]="p.imageUrl || 'https://placehold.co/60x60?text=No+Image'" alt="{{ p.name }}" class="product-thumb" /></td>
+      <td><img [src]="p.images || 'https://placehold.co/60x60?text=No+Image'" alt="{{ p.name }}" class="product-thumb" /></td>
       <td>{{ p.name }}</td>
       <td>{{ p.brandName }}</td>
       <td>{{ p.categoryName }}</td>

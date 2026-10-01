@@ -1,0 +1,133 @@
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.page h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #6b7280;
+}
+
+.empty p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.65rem 1.5rem;
+  border-radius: 6px;
+  background: #d4af37;
+  color: #1a1a2e;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+  background: #c49a2e;
+  transform: translateY(-1px);
+}
+
+/* Order card */
+.order-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.order-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.order-card header div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.order-card header strong {
+  font-size: 1.05rem;
+  color: #1a1a2e;
+}
+
+.order-card header small {
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Line items */
+.line {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.92rem;
+  color: #374151;
+}
+
+/* Footer */
+.order-card footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.order-card footer small {
+  color: #6b7280;
+  font-size: 0.85rem;
+  max-width: 60%;
+}
+
+.order-card footer strong {
+  font-size: 1.15rem;
+  color: #1a1a2e;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+  .order-card header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .order-card footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .order-card footer strong {
+    align-self: flex-end;
+  }
+}

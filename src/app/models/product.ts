@@ -1,3 +1,10 @@
+export interface ProductImage {
+  id: number;
+  imageUrl: string;
+  isPrimary: boolean;
+  displayOrder: number;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -5,7 +12,7 @@ export interface Product {
   price: number;
   discountPrice?: number;
   stock?: number;
-  imageUrl: string;
+  images?: ProductImage[];   // replaces imageUrl
   brandId?: number;
   categoryId?: number;
   brandName?: string;

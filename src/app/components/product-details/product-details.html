@@ -6,7 +6,7 @@
   <div class="row" *ngIf="!loading && product">
     <div class="col-md-6">
       <img
-        [src]="product.imageUrl || 'https://placehold.co/500x500?text=No+Image'"
+        [src]="product.images || 'https://placehold.co/500x500?text=No+Image'"
         class="img-fluid rounded"
         [alt]="product.name"
         (error)="$any($event.target).src='https://placehold.co/500x500?text=No+Image'"
