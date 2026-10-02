@@ -1,9 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ReviewService } from '../../services/review-service';
 import { Review } from '../../models/review';
-
 
 @Component({
   selector: 'app-review-list-component',
@@ -16,14 +15,17 @@ export class ReviewListComponent implements OnInit {
   private reviewService = inject(ReviewService);
   private toastr = inject(ToastrService);
 
-  reviews: Review[] = [];
+  reviews = signal<Review[]>([]);
 
-  ngOnInit(): void { this.reviewService.getAll().subscribe(data => this.reviews = data); }
+  ngOnInit(): void { this.reviewService.getAll().subscribe(data => this.reviews.set(data)); }
 
   deleteReview(id: number): void {
     if (!confirm('Remove this review?')) return;
     this.reviewService.delete(id).subscribe({
-      next: () => { this.toastr.success('Review removed'); this.reviews = this.reviews.filter(r => r.id !== id); },
+      next: () => {
+        this.toastr.success('Review removed');
+        this.reviews.set(this.reviews().filter(r => r.id !== id));
+      },
       error: () => this.toastr.error('Failed to remove review')
     });
   }

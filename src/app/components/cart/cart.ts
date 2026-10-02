@@ -14,7 +14,7 @@ import { CartService } from '../../services/cart';
 })
 export class Cart implements OnInit {
    
-
+  
   items = signal<CartItem[]>([]);
   loading = signal(true);
   total = computed(() => this.items().reduce((sum, i) => sum + i.price * i.quantity, 0));
@@ -40,8 +40,8 @@ export class Cart implements OnInit {
     if (quantity < 1) return;
     this.cartService.updateQuantity(item.id, quantity).subscribe({
       next: () => {
-        item.quantity = quantity;
-        item.total = item.price * quantity;
+        this.items.set(this.items().map(i =>
+        i.id === item.id ? { ...i, quantity, total: i.price * quantity } : i));
       },
       error: () => this.toastr.error('Could not update quantity.')
     });
@@ -62,10 +62,12 @@ export class Cart implements OnInit {
   }
 
   goToCheckout(): void {
-    if (this.items.length === 0) {
+    if (this.items().length === 0) {
       this.toastr.warning('Your cart is empty.');
       return;
     }
     this.router.navigate(['/checkout']);
   }
+
+    
 }

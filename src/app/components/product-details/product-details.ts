@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -18,9 +18,9 @@ import { ProductService } from '../../services/product-service';
   styleUrl: './product-details.css'
 })
 export class ProductDetails implements OnInit {
-  product: Product | null = null;
-  loading = true;
-  quantity = 1;
+  product = signal<Product | null>(null);
+  loading = signal(true);
+  quantity = signal(1);
 
   constructor(
     private route: ActivatedRoute,
@@ -34,31 +34,33 @@ export class ProductDetails implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.productService.getById(id).subscribe({
-      next: (data) => { this.product = data; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => { this.product.set(data); this.loading.set(false); },
+      error: () => { this.loading.set(false); }
     });
   }
 
   addToCart(): void {
-    if (!this.product) return;
+    const currentProduct = this.product();
+    if (!currentProduct) return;
     if (!this.authService.isLoggedIn()) {
       this.toastr.warning('Please log in to add items to your cart.');
       return;
     }
-    this.cartService.addToCart({ productId: this.product.id, quantity: this.quantity }).subscribe({
-      next: () => this.toastr.success(`${this.product!.name} added to cart!`),
+    this.cartService.addToCart({ productId: currentProduct.id, quantity: this.quantity() }).subscribe({
+      next: () => this.toastr.success(`${currentProduct.name} added to cart!`),
       error: () => this.toastr.error('Could not add item to cart.')
     });
   }
 
   addToWishlist(): void {
-    if (!this.product) return;
+    const currentProduct = this.product();
+    if (!currentProduct) return;
     if (!this.authService.isLoggedIn()) {
       this.toastr.warning('Please log in to use your wishlist.');
       return;
     }
-    this.wishlistService.addToWishlist({ productId: this.product.id }).subscribe({
-      next: () => this.toastr.success(`${this.product!.name} added to wishlist!`),
+    this.wishlistService.addToWishlist({ productId: currentProduct.id }).subscribe({
+      next: () => this.toastr.success(`${currentProduct.name} added to wishlist!`),
       error: () => this.toastr.error('Could not add item to wishlist.')
     });
   }

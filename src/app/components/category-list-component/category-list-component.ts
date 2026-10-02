@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -16,16 +16,21 @@ export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
   private toastr = inject(ToastrService);
 
-  categories: Category[] = [];
-  newCategoryName = '';
+  categories = signal<Category[]>([]);
+  newCategoryName = signal('');
 
   ngOnInit(): void { this.load(); }
-  load(): void { this.categoryService.getAll().subscribe(data => this.categories = data); }
+
+  load(): void {
+    this.categoryService.getAll().subscribe(data => this.categories.set(data));
+  }
 
   addCategory(): void {
-    if (!this.newCategoryName.trim()) return;
-    this.categoryService.create({ name: this.newCategoryName }).subscribe({
-      next: () => { this.toastr.success('Category added'); this.newCategoryName = ''; this.load(); },
+    const name = this.newCategoryName().trim();
+    if (!name) return;
+
+    this.categoryService.create({ name }).subscribe({
+      next: () => { this.toastr.success('Category added'); this.newCategoryName.set(''); this.load(); },
       error: () => this.toastr.error('Failed to add category')
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -16,10 +16,10 @@ export class OrderListComponent implements OnInit {
   private orderService = inject(OrderService);
   private toastr = inject(ToastrService);
 
-  orders: Order[] = [];
+  orders = signal<Order[]>([]);
   statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
-  ngOnInit(): void { this.orderService.getAll().subscribe(data => this.orders = data); }
+  ngOnInit(): void { this.orderService.getAll().subscribe(data => this.orders.set(data)); }
 
   changeStatus(order: Order, newStatus: string): void {
     this.orderService.updateStatus(order.id, newStatus).subscribe({

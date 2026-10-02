@@ -1,10 +1,10 @@
 <h2>Brands</h2>
 <div class="add-row">
-  <input [(ngModel)]="newBrandName" placeholder="New brand name" />
+  <input [ngModel]="newBrandName()" (ngModelChange)="newBrandName.set($event)" placeholder="New brand name" />
   <button (click)="addBrand()">Add</button>
 </div>
 <ul>
-  <li *ngFor="let b of brands">
+  <li *ngFor="let b of brands()">
     {{ b.name }}
     <button (click)="deleteBrand(b.id)">Delete</button>
   </li>

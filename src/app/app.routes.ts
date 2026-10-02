@@ -11,6 +11,9 @@ export const appRoutes: Routes = [
   { path: 'product-details/:id', loadComponent: () => import('./components/product-details/product-details').then(m => m.ProductDetails) },
 
   // ---- Logged-in users (customers, and admins too) ----
+  { path: 'checkout', canActivate: [authGuard], loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout) },
+  { path: 'payment/:orderId', canActivate: [authGuard], loadComponent: () => import('./components/payment/payment').then(m => m.Payment) },
+  { path: 'payment/:orderId', canActivate: [authGuard], loadComponent: () => import('./components/payment/payment').then(m => m.Payment) },
   { path: 'cart', canActivate: [authGuard], loadComponent: () => import('./components/cart/cart').then(m => m.Cart) },
   { path: 'checkout', canActivate: [authGuard], loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout) },
   { path: 'wishlist', canActivate: [authGuard], loadComponent: () => import('./components/wishlist/wishlist').then(m => m.Wishlist) },

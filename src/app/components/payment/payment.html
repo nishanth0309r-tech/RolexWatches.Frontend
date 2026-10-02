@@ -1,0 +1,30 @@
+<section class="page">
+  <h1>Payment</h1>
+
+  @if (order(); as o) {
+    <p>Order #{{ o.id }} · Total: <strong>{{ o.totalAmount | currency }}</strong></p>
+
+    <form [formGroup]="form" (ngSubmit)="pay()">
+      <label>
+        Method
+        <select formControlName="method">
+          <option value="Card">Card</option>
+        </select>
+      </label>
+
+      <label>
+        Card number (test: any 16 digits, ending 0000 fails)
+        <input formControlName="cardNumber" maxlength="16" inputmode="numeric" />
+      </label>
+      @if (form.controls.cardNumber.touched && form.controls.cardNumber.invalid) {
+        <small class="error">Enter a 16-digit card number.</small>
+      }
+
+      <button type="submit" class="btn primary" [disabled]="paying()">
+        {{ paying() ? 'Processing…' : 'Pay now' }}
+      </button>
+    </form>
+  } @else {
+    <p>Loading order…</p>
+  }
+</section>

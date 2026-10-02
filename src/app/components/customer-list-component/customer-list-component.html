@@ -2,7 +2,7 @@
 <table>
   <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
   <tbody>
-    <tr *ngFor="let c of customers">
+    <tr *ngFor="let c of customers()">
       <td>{{ c.fullName }}</td>
       <td>{{ c.email }}</td>
       <td>{{ c.isActive ? 'Active' : 'Blocked' }}</td>

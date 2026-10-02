@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,10 +26,10 @@ export class ProductFormComponent implements OnInit {
   private toastr = inject(ToastrService);
 
   form: FormGroup;
-  isEditMode = false;
+  isEditMode = signal(false);
   productId?: number;
-  brands: Brand[] = [];
-  categories: Category[] = [];
+  brands = signal<Brand[]>([]);
+  categories = signal<Category[]>([]);
 
   constructor() {
     this.form = this.fb.group({
@@ -46,12 +46,12 @@ export class ProductFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.brandService.getAll().subscribe(data => this.brands = data);
-    this.categoryService.getAll().subscribe(data => this.categories = data);
+    this.brandService.getAll().subscribe(data => this.brands.set(data));
+    this.categoryService.getAll().subscribe(data => this.categories.set(data));
 
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
-      this.isEditMode = true;
+      this.isEditMode.set(true);
       this.productId = +idParam;
       this.productService.getById(this.productId).subscribe(product => this.form.patchValue(product));
     }
@@ -62,7 +62,7 @@ export class ProductFormComponent implements OnInit {
       this.toastr.warning('Please fill all required fields');
       return;
     }
-    if (this.isEditMode && this.productId) {
+    if (this.isEditMode() && this.productId) {
       this.productService.update(this.productId, this.form.value).subscribe({
         next: () => { this.toastr.success('Product updated successfully'); this.router.navigate(['/admin/products']); },
         error: () => this.toastr.error('Failed to update product')

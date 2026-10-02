@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -16,16 +16,25 @@ export class BrandListComponent implements OnInit {
   private brandService = inject(BrandService);
   private toastr = inject(ToastrService);
 
-  brands: Brand[] = [];
-  newBrandName = '';
+  brands = signal<Brand[]>([]);
+  newBrandName = signal('');
 
   ngOnInit(): void { this.load(); }
-  load(): void { this.brandService.getAll().subscribe(data => this.brands = data); }
+
+  load(): void {
+    this.brandService.getAll().subscribe(data => this.brands.set(data));
+  }
 
   addBrand(): void {
-    if (!this.newBrandName.trim()) return;
-    this.brandService.create({ name: this.newBrandName }).subscribe({
-      next: () => { this.toastr.success('Brand added'); this.newBrandName = ''; this.load(); },
+    const name = this.newBrandName().trim();
+    if (!name) return;
+
+    this.brandService.create({ name }).subscribe({
+      next: () => {
+        this.toastr.success('Brand added');
+        this.newBrandName.set('');
+        this.load();
+      },
       error: () => this.toastr.error('Failed to add brand')
     });
   }

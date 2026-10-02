@@ -18,9 +18,9 @@
             <p>{{ item.price | currency }}</p>
           </div>
           <div class="qty">
-            <button type="button" (click)="updateQuantity(item, -1)" [disabled]="item.quantity <= 1">−</button>
+            <button type="button" (click)="updateQuantity(item, item.quantity - 1)" [disabled]="item.quantity <= 1">−</button>
             <span>{{ item.quantity }}</span>
-            <button type="button" (click)="updateQuantity(item, 1)">+</button>
+            <button type="button" (click)="updateQuantity(item, item.quantity + 1)">+</button>
           </div>
           <strong class="line">{{ item.price * item.quantity | currency }}</strong>
           <button type="button" class="link-danger" (click)="remove(item)">Remove</button>
@@ -33,5 +33,12 @@
       <strong>{{ total() | currency }}</strong>
       <a routerLink="/checkout" class="btn primary">Proceed to checkout</a>
     </div>
+
+    <!-- <div class="summary">
+      <span>Total</span>
+      <strong>{{ total() | currency }}</strong>
+      <button type="button" class="btn primary" (click)="placeOrder()" [disabled]="placing()">
+      {{ placing() ? 'Placing order…' : 'Place Order' }}
+    </button> -->
   }
 </section>

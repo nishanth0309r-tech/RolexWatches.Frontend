@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product-service';
@@ -15,9 +15,9 @@ import { Product } from '../../models/product';
   animations: [staggerFadeIn]
 })
 export class Home implements OnInit {
-  products: Product[] = [];
-  dealProducts: Product[] = [];
-  loading = true;
+  products = signal<Product[]>([]);
+  dealProducts = signal<Product[]>([]);
+  loading = signal(true);
 
   categories = [
     { name: 'Dive Watches', icon: 'bi-water' },
@@ -39,11 +39,11 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this.productService.getAll().subscribe({
       next: (data) => {
-        this.products = data;
-        this.dealProducts = data.filter(p => p.discountPrice);
-        this.loading = false;
+        this.products.set(data);
+        this.dealProducts.set(data.filter(p => p.discountPrice));
+        this.loading.set(false);
       },
-      error: () => { this.loading = false; }
+      error: () => { this.loading.set(false); }
     });
   }
 }

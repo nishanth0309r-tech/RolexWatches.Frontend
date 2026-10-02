@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product-service';
@@ -16,13 +16,13 @@ export class ProductListComponent implements OnInit {
   private productService = inject(ProductService);
   private toastr = inject(ToastrService);
 
-  products: Product[] = [];
+  products = signal<Product[]>([]);
 
   ngOnInit(): void { this.loadProducts(); }
 
   loadProducts(): void {
     this.productService.getAll().subscribe({
-      next: (data) => this.products = data,
+      next: (data) => this.products.set(data),
       error: () => this.toastr.error('Failed to load products')
     });
   }
@@ -30,7 +30,10 @@ export class ProductListComponent implements OnInit {
   deleteProduct(id: number): void {
     if (!confirm('Delete this product?')) return;
     this.productService.delete(id).subscribe({
-      next: () => { this.toastr.success('Product deleted'); this.products = this.products.filter(p => p.id !== id); },
+      next: () => {
+        this.toastr.success('Product deleted');
+        this.products.set(this.products().filter(p => p.id !== id));
+      },
       error: () => this.toastr.error('Failed to delete product')
     });
   }

@@ -2,7 +2,6 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order-service';
@@ -44,18 +43,11 @@ export class Checkout implements OnInit {
     }
     this.submitting.set(true);
 
-    const cartItems = this.items();
     this.orderService.checkout({
       shippingAddress: this.form.controls.shippingAddress.value,
-      items: cartItems.map(i => ({ productId: i.productId, quantity: i.quantity }))
+      items: this.items().map(i => ({ productId: i.productId, quantity: i.quantity }))
     }).subscribe({
-      next: () => {
-        // the backend doesn't clear the cart, so empty it here
-        forkJoin(cartItems.map(i => this.cartService.removeFromCart(i.id))).subscribe(() => {
-          this.toastr.success('Your order has been placed.', 'Thank you');
-          this.router.navigate(['/orders']);
-        });
-      },
+      next: order => this.router.navigate(['/payment', order.id]),
       error: err => {
         this.submitting.set(false);
         this.toastr.error(err?.error?.message ?? 'Could not place your order.', 'Checkout failed');
