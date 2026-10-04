@@ -10,6 +10,7 @@ export interface MyOrder {
   id: number;
   userId: string;
   orderDate: string;
+  createdAt: string;
   status: number | string;   // ASP.NET sends enums as numbers unless configured otherwise
   totalAmount: number;
   shippingAddress: string;

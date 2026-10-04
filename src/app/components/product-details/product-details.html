@@ -1,39 +1,55 @@
 <div class="container py-4">
-  <div *ngIf="loading()" class="text-center py-5">
-    <div class="spinner-border" role="status"></div>
-  </div>
-
-  <div class="row" *ngIf="!loading() && product()">
-    <div class="col-md-6">
-      <img
-        [src]="product()?.images || 'https://placehold.co/500x500?text=No+Image'"
-        class="img-fluid rounded"
-        [alt]="product()?.name"
-        (error)="$any($event.target).src='https://placehold.co/500x500?text=No+Image'"
-      >
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
     </div>
-    <div class="col-md-6">
-      <h2>{{ product()?.name }}</h2>
-      <p class="fs-4 fw-bold">
-        <span *ngIf="product()?.discountPrice" class="text-danger">${{ product()?.discountPrice }}</span>
-        <span [class.text-decoration-line-through]="product()?.discountPrice" [class.text-muted]="product()?.discountPrice">
-          ${{ product()?.price }}
-        </span>
-      </p>
-
-      <div class="d-flex align-items-center gap-2 mb-3">
-        <label>Quantity:</label>
-        <input type="number" class="form-control w-25" [ngModel]="quantity()" (ngModelChange)="quantity.set($event)" min="1">
+  } @else if (product(); as p) {
+    <div class="row">
+      <div class="col-md-6">
+        <img
+          [src]="imageUrl()"
+          class="img-fluid rounded"
+          [alt]="p.name"
+          (error)="$any($event.target).src='https://placehold.co/500x500?text=No+Image'"
+        >
       </div>
 
-      <div class="d-flex gap-2">
-        <button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
-        <button class="btn btn-outline-danger" (click)="addToWishlist()">
-          <i class="bi bi-heart"></i> Wishlist
-        </button>
+      <div class="col-md-6">
+        <h2>{{ p.name }}</h2>
+
+        <p class="fs-4 fw-bold">
+          @if (p.discountPrice) {
+            <span class="text-danger me-2">{{ p.discountPrice | currency }}</span>
+            <span class="text-decoration-line-through text-muted">{{ p.price | currency }}</span>
+          } @else {
+            <span>{{ p.price | currency }}</span>
+          }
+        </p>
+
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <label for="qty">Quantity:</label>
+          <input
+            id="qty"
+            type="number"
+            class="form-control"
+            style="max-width: 100px"
+            min="1"
+            [ngModel]="quantity()"
+            (ngModelChange)="setQuantity($event)"
+          >
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
+          <button class="btn btn-outline-danger" (click)="addToWishlist()">
+            <i class="bi bi-heart"></i> Wishlist
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <p *ngIf="!loading() && !product()" class="text-muted">Product not found.</p>
+    <app-product-reviews [productId]="p.id" />
+  } @else {
+    <p class="text-muted">Product not found.</p>
+  }
 </div>

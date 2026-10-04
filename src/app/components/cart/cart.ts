@@ -69,5 +69,9 @@ export class Cart implements OnInit {
     this.router.navigate(['/checkout']);
   }
 
+  buyNow(item: CartItem): void {
+  this.router.navigate(['/checkout'], { queryParams: { item: item.id } });
+  }
+
     
 }

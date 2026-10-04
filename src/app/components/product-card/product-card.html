@@ -1,5 +1,5 @@
 <div class="card h-100 shadow-sm tilt-card" [style]="tiltStyle()" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
-  <a [routerLink]="['/product', product().id]">
+  <a [routerLink]="['/product-details', product().id]">
     <img
       [src]="imageUrl()"
       class="card-img-top"

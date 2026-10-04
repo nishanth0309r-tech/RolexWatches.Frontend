@@ -113,6 +113,26 @@
   color: #1a1a2e;
 }
 
+.total-pay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn.pay {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn.pay:hover {
+  background: #374151;
+}
+
 /* Responsive */
 @media (max-width: 540px) {
   .order-card header {

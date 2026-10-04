@@ -1,16 +1,22 @@
 <div class="container py-4">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>All Products</h2>
+    <h2>{{ title() }}</h2>
 
-   <input
-  type="text"
-  class="form-control w-25"
-  placeholder="Search products..."
-  [(ngModel)]="searchTerm"
-  (ngModelChange)="onSearch()"
-/>
+    <input
+      type="text"
+      class="form-control w-25"
+      placeholder="Search products..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearch()"
+    />
   </div>
+
+  @if (isFiltered()) {
+    <p class="mb-4">
+      <a routerLink="/product-list">← Show all watches</a>
+    </p>
+  }
 
   @if (loading()) {
     <div class="text-center py-5">
@@ -20,18 +26,18 @@
 
   @if (!loading()) {
     <div class="row g-4">
-
       @for (product of filteredProducts(); track product.id) {
         <div class="col-md-3">
           <app-product-card [product]="product"></app-product-card>
         </div>
       }
-
     </div>
 
     @if (filteredProducts().length === 0) {
       <p class="text-muted">
-        No products match your search.
+        {{ products().length === 0 && isFiltered()
+            ? 'No watches found here yet.'
+            : 'No products match your search.' }}
       </p>
     }
   }

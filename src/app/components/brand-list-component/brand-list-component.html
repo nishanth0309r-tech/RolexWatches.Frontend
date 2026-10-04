@@ -1,11 +1,85 @@
-<h2>Brands</h2>
-<div class="add-row">
-  <input [ngModel]="newBrandName()" (ngModelChange)="newBrandName.set($event)" placeholder="New brand name" />
-  <button (click)="addBrand()">Add</button>
-</div>
-<ul>
-  <li *ngFor="let b of brands()">
-    {{ b.name }}
-    <button (click)="deleteBrand(b.id)">Delete</button>
-  </li>
-</ul>
+<section class="page">
+  <div class="page-head">
+    <h1>Brands</h1>
+    <button type="button" class="btn primary" (click)="openAdd()">+ Add brand</button>
+  </div>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th><th>Logo</th><th>Name</th><th>Description</th><th>Products</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of brands(); track b.id) {
+            <tr>
+              <td>{{ b.id }}</td>
+              <td>
+                @if (b.logoUrl) {
+                  <img [src]="b.logoUrl" [alt]="b.name" class="logo" />
+                } @else {
+                  <span class="muted">–</span>
+                }
+              </td>
+              <td>
+                <a [routerLink]="['/product-list']" [queryParams]="{ brand: b.id }" class="name-link">{{ b.name }}</a>
+              </td>
+              <td class="desc">{{ b.description || '–' }}</td>
+              <td>{{ b.productCount }}</td>
+              <td>
+                <span class="badge" [class.off]="!b.isActive">{{ b.isActive ? 'Active' : 'Inactive' }}</span>
+              </td>
+              <td class="actions">
+                <button type="button" class="btn-edit" (click)="openEdit(b)">Edit</button>
+                <button type="button" class="btn-del" (click)="deleteBrand(b)" [disabled]="b.productCount > 0">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (modalOpen()) {
+    <div class="backdrop" (click)="closeModal()">
+      <div class="dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <h2>{{ editingId() ? 'Edit brand' : 'Add brand' }}</h2>
+
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <label>
+            Name
+            <input formControlName="name" />
+          </label>
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <small class="error">Name is required.</small>
+          }
+
+          <label>
+            Logo URL
+            <input formControlName="logoUrl" placeholder="https://…" />
+          </label>
+
+          <label>
+            Description
+            <textarea rows="3" formControlName="description"></textarea>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" formControlName="isActive" /> Active
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn primary" [disabled]="saving()">
+              {{ saving() ? 'Saving…' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

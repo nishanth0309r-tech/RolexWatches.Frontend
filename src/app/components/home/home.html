@@ -1,34 +1,35 @@
-<!-- HERO BANNER CAROUSEL -->
-<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" [style.background]="banner.bg">
-      <div class="banner-content">
+<!-- HERO BANNER -->
+<section class="hero" (mouseenter)="paused = true" (mouseleave)="paused = false">
+  @for (banner of banners; track $index) {
+    <div class="hero-slide" [class.is-active]="$index === current()" [style.background]="banner.bg">
+      <div class="hero-content">
         <h1>{{ banner.title }}</h1>
         <p>{{ banner.subtitle }}</p>
-        <a routerLink="/products" class="btn btn-light btn-lg">{{ banner.cta }}</a>
+        <a [routerLink]="banner.link" class="btn btn-light btn-lg">{{ banner.cta }}</a>
       </div>
     </div>
+  }
+
+  <button type="button" class="hero-arrow prev" (click)="prev()" aria-label="Previous slide">&#8249;</button>
+  <button type="button" class="hero-arrow next" (click)="next()" aria-label="Next slide">&#8250;</button>
+
+  <div class="hero-dots">
+    @for (b of banners; track $index) {
+      <button type="button" class="hero-dot" [class.is-active]="$index === current()"
+              (click)="goTo($index)" [attr.aria-label]="'Go to slide ' + ($index + 1)"></button>
+    }
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
+</section>
 
 <!-- CATEGORY STRIP -->
 <div class="container py-4">
   <div class="category-strip">
-    <div class="category-card" *ngFor="let cat of categories" routerLink="/products">
-      <i class="bi" [ngClass]="cat.icon"></i>
-      <span>{{ cat.name }}</span>
-    </div>
+    @for (cat of categories(); track cat.id) {
+      <a class="category-card" [routerLink]="['/product-list']" [queryParams]="{ category: cat.id }">
+        <i class="bi" [class]="cat.icon"></i>
+        <span>{{ cat.name }}</span>
+      </a>
+    }
   </div>
 </div>
 
@@ -36,58 +37,58 @@
 <div class="trust-strip">
   <div class="container">
     <div class="row text-center">
-      <div class="col-6 col-md-3">
-        <i class="bi bi-truck"></i>
-        <p>Free Shipping</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-shield-check"></i>
-        <p>2-Year Warranty</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-arrow-return-left"></i>
-        <p>Easy Returns</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-headset"></i>
-        <p>24/7 Support</p>
-      </div>
+      <div class="col-6 col-md-3"><i class="bi bi-truck"></i><p>Free Shipping</p></div>
+      <div class="col-6 col-md-3"><i class="bi bi-shield-check"></i><p>2-Year Warranty</p></div>
+      <div class="col-6 col-md-3"><i class="bi bi-arrow-return-left"></i><p>Easy Returns</p></div>
+      <div class="col-6 col-md-3"><i class="bi bi-headset"></i><p>24/7 Support</p></div>
     </div>
   </div>
 </div>
 
 <!-- LOADING -->
-<div class="container py-5" *ngIf="loading()">
-  <div class="row g-4">
-    <div class="col-6 col-md-3" *ngFor="let s of [1,2,3,4]">
-      <div class="skeleton-card"></div>
+@if (loading()) {
+  <div class="container py-5">
+    <div class="row g-4">
+      @for (s of [1, 2, 3, 4]; track s) {
+        <div class="col-6 col-md-3"><div class="skeleton-card"></div></div>
+      }
     </div>
   </div>
-</div>
+}
 
-<!-- TODAY'S DEALS -->
-<div class="container py-4" *ngIf="!loading() && dealProducts().length > 0">
-  <div class="section-header">
-    <h3><i class="bi bi-lightning-charge-fill text-warning"></i> Today's Deals</h3>
-    <a routerLink="/products" class="see-all">See all &rarr;</a>
-  </div>
-  <div class="row g-4" [@staggerFadeIn]="dealProducts().length">
-    <div class="col-6 col-md-3" *ngFor="let product of dealProducts()">
-      <app-product-card [product]="product"></app-product-card>
+@if (!loading()) {
+  <!-- TODAY'S DEALS -->
+  @if (dealProducts().length > 0) {
+    <div class="container py-4">
+      <div class="section-header">
+        <h3><i class="bi bi-lightning-charge-fill text-warning"></i> Today's Deals</h3>
+        <a routerLink="/product-list" class="see-all">See all &rarr;</a>
+      </div>
+      <div class="row g-4" [@staggerFadeIn]="dealProducts().length">
+        @for (product of dealProducts(); track product.id) {
+          <div class="col-6 col-md-3">
+            <app-product-card [product]="product"></app-product-card>
+          </div>
+        }
+      </div>
     </div>
-  </div>
-</div>
+  }
 
-<!-- FEATURED PRODUCTS -->
-<div class="container py-4" *ngIf="!loading()">
-  <div class="section-header">
-    <h3>Featured Watches</h3>
-    <a routerLink="/products" class="see-all">See all &rarr;</a>
-  </div>
-  <div class="row g-4" [@staggerFadeIn]="products().length">
-    <div class="col-6 col-md-3" *ngFor="let product of products()">
-      <app-product-card [product]="product"></app-product-card>
+  <!-- FEATURED PRODUCTS -->
+  <div class="container py-4">
+    <div class="section-header">
+      <h3>Featured Watches</h3>
+      <a routerLink="/product-list" class="see-all">See all &rarr;</a>
     </div>
+    <div class="row g-4" [@staggerFadeIn]="products().length">
+      @for (product of products(); track product.id) {
+        <div class="col-6 col-md-3">
+          <app-product-card [product]="product"></app-product-card>
+        </div>
+      }
+    </div>
+    @if (products().length === 0) {
+      <p class="text-muted">No products found.</p>
+    }
   </div>
-  <p *ngIf="products().length === 0" class="text-muted">No products found.</p>
-</div>
+}

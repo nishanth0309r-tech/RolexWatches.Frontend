@@ -1,0 +1,17 @@
+.reviews { margin-top: 2rem; }
+.summary { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.avg { font-size: 1.8rem; font-weight: 700; }
+.stars { color: #c9a24b; letter-spacing: 2px; }
+.count, .muted { color: #6b7280; }
+.review { padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
+.review .head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.review p { margin: 0.4rem 0 0; }
+.write { margin-top: 1.5rem; }
+.pick { display: flex; gap: 0.2rem; margin-bottom: 0.5rem; }
+.star { background: none; border: none; font-size: 1.8rem; line-height: 1; color: #d1d5db; cursor: pointer; padding: 0; }
+.star.on { color: #c9a24b; }
+form { display: flex; flex-direction: column; gap: 0.6rem; max-width: 520px; }
+textarea { padding: 0.6rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
+.error { color: #dc2626; }
+.btn.primary { align-self: flex-start; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; background: #111827; color: #fff; font-weight: 600; cursor: pointer; }
+.btn.primary:disabled { opacity: 0.6; cursor: not-allowed; }

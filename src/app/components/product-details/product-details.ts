@@ -1,5 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, OnInit, signal } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -9,11 +9,12 @@ import { WishlistService } from '../../services/wishlist';
 import { AuthService } from '../../services/auth-service';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product-service';
+import { ProductReviews } from '../product-reviews/product-reviews';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CurrencyPipe, FormsModule,ProductReviews],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
 })
@@ -21,6 +22,13 @@ export class ProductDetails implements OnInit {
   product = signal<Product | null>(null);
   loading = signal(true);
   quantity = signal(1);
+
+  imageUrl = computed(() => {
+  const images = this.product()?.images;
+  return images?.find(i => i.isPrimary)?.imageUrl
+      ?? images?.[0]?.imageUrl
+      ?? 'https://placehold.co/500x500?text=No+Image';
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -63,5 +71,10 @@ export class ProductDetails implements OnInit {
       next: () => this.toastr.success(`${currentProduct.name} added to wishlist!`),
       error: () => this.toastr.error('Could not add item to wishlist.')
     });
+  }
+
+  setQuantity(value: number | string): void {
+  const n = Math.floor(Number(value));
+  this.quantity.set(Number.isFinite(n) && n >= 1 ? n : 1);
   }
 }
