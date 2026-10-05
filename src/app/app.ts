@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { routeFadeAnimation } from './animations/route-animations';
 import { Footer } from './components/footer/footer';
@@ -16,7 +16,7 @@ import { Footer } from './components/footer/footer';
 export class App {
   constructor(public router: Router) {}
 
-  getRouteAnimationData() {
+  getRouteAnimationData(): string {
     return this.router.url;
   }
 }

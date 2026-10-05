@@ -1,0 +1,74 @@
+<main class="editorial-page">
+  @switch (page()) {
+    @case ('about') {
+      <header class="editorial-heading">
+        <span class="section-eyebrow">OUR POINT OF VIEW</span>
+        <h1>A considered approach to time.</h1>
+        <p>A great watch is more than a way to keep time. It is a personal piece of design, chosen for its character and kept for the moments that matter.</p>
+      </header>
+      <section class="story-panel">
+        <div class="story-mark" aria-hidden="true"><i class="bi bi-watch"></i></div>
+        <div>
+          <h2>Chosen with care. Worn for years.</h2>
+          <p>We bring together distinctive timepieces for people who value thoughtful design, dependable craftsmanship, and the small details that make a watch feel personal.</p>
+          <p>Explore at your own pace, compare the details, and find a piece that feels unmistakably yours.</p>
+          <a routerLink="/product-list" class="editorial-cta">Explore the watches <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+      <section class="value-grid" aria-label="Our values">
+        <article><i class="bi bi-gem" aria-hidden="true"></i><h3>Considered selection</h3><p>Distinctive designs chosen for their character and finishing.</p></article>
+        <article><i class="bi bi-shield-check" aria-hidden="true"></i><h3>Personal service</h3><p>Our concierge is available to help with your questions.</p></article>
+        <article><i class="bi bi-hourglass-split" aria-hidden="true"></i><h3>Made to be kept</h3><p>Timepieces selected to be enjoyed well beyond the moment of purchase.</p></article>
+      </section>
+    }
+    @case ('collections') {
+      <header class="editorial-heading">
+        <span class="section-eyebrow">FIND YOUR NEXT TIMEPIECE</span>
+        <h1>Explore the collections.</h1>
+        <p>From everyday refinement to mechanical classics, discover a style that suits your time.</p>
+      </header>
+      <section class="collection-grid" aria-label="Watch collections">
+        <article class="collection-panel collection-luxury">
+          <span class="collection-number">01 / THE EDIT</span>
+          <div><h2>Luxury &amp; premium</h2><p>Distinctive silhouettes and considered details.</p><a routerLink="/product-list">Shop all watches <span aria-hidden="true">↗</span></a></div>
+        </article>
+        <article class="collection-panel collection-automatic">
+          <span class="collection-number">02 / THE MOVEMENT</span>
+          <div><h2>Automatic classics</h2><p>Precision-driven pieces with a mechanical heart.</p><a routerLink="/product-list">Discover the range <span aria-hidden="true">↗</span></a></div>
+        </article>
+        <article class="collection-panel collection-everyday">
+          <span class="collection-number">03 / EVERY DAY</span>
+          <div><h2>Everyday icons</h2><p>Versatile companions, from the weekday to the weekend.</p><a routerLink="/product-list">Find your watch <span aria-hidden="true">↗</span></a></div>
+        </article>
+      </section>
+    }
+    @case ('contact') {
+      <header class="editorial-heading">
+        <span class="section-eyebrow">HERE WHEN YOU NEED US</span>
+        <h1>Contact the concierge.</h1>
+        <p>Questions about a timepiece, an order, or caring for your watch? Choose the contact option that works for you.</p>
+      </header>
+      <section class="contact-grid" aria-label="Contact options">
+        <article class="contact-card">
+          <i class="bi bi-envelope" aria-hidden="true"></i>
+          <h2>Email us</h2>
+          <p>Send a note to our customer care team and include your order number if you have one.</p>
+          <a href="mailto:support@fluxtime.com">support@fluxtime.com</a>
+        </article>
+        <article class="contact-card">
+          <i class="bi bi-telephone" aria-hidden="true"></i>
+          <h2>Call us</h2>
+          <p>Prefer to speak with someone? Our team can help with product and order questions.</p>
+          <a href="tel:+919876543210">+91 98765 43210</a>
+        </article>
+        <article class="contact-card">
+          <i class="bi bi-box-seam" aria-hidden="true"></i>
+          <h2>Order support</h2>
+          <p>For delivery, returns, or warranty questions, contact us and we’ll point you in the right direction.</p>
+          <a href="mailto:support@fluxtime.com?subject=Order%20support">Ask about an order</a>
+        </article>
+      </section>
+      <p class="contact-note">For account-specific questions, please sign in before contacting us so we can assist with your order.</p>
+    }
+  }
+</main>

@@ -30,7 +30,7 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/register`, dto).pipe(
       tap(res => {
         this.setSession(res.data);
-        this.toastr.success(res.message ?? 'Registration successful.', 'Welcome to WatchHub');
+        this.toastr.success(res.message ?? 'Registration successful.', 'Welcome to Flux Time');
         this.router.navigate(['/']);
       }),
       catchError(err => this.handleAuthError(err))

@@ -24,7 +24,7 @@ export class ProductService {
     return this.http.get<Product[]>(this.publicUrl).pipe(
       catchError(() => {
         console.warn('Product API unreachable — showing demo data instead.');
-        return of();
+        return of([]);
       })
     );
   }

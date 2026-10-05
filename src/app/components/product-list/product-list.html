@@ -1,45 +1,146 @@
-<div class="container py-4">
+<main class="product-list-page">
+  <header class="listing-header">
+    <div class="listing-intro">
+      <span class="listing-eyebrow">FLUX TIME · THE COLLECTION</span>
+      <h1>{{ title() }}</h1>
+      <p>Considered timepieces, selected for the moments that matter.</p>
+    </div>
+    <label class="search-field">
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <input
+        type="search"
+        placeholder="Search watches"
+        aria-label="Search watches"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+    </label>
+  </header>
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{{ title() }}</h2>
+  <section class="filter-panel" aria-label="Filter and sort watches">
+    <div class="filter-heading">
+      <span><i class="bi bi-sliders" aria-hidden="true"></i> Refine your selection</span>
+      @if (isFiltered()) {
+        <button class="clear-filters" type="button" (click)="resetFilters()">Show all watches</button>
+      }
+    </div>
 
-    <input
-      type="text"
-      class="form-control w-25"
-      placeholder="Search products..."
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearch()"
-    />
+    <div class="filter-controls">
+      <label class="filter-field">
+        <span>Category</span>
+        <select aria-label="Filter by category" [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)">
+          <option value="">All categories</option>
+          @for (option of categoryOptions(); track option.value) {
+            <option [value]="option.value">{{ option.label }} ({{ option.count }})</option>
+          }
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>Brand</span>
+        <select aria-label="Filter by brand" [ngModel]="selectedBrand()" (ngModelChange)="selectedBrand.set($event)">
+          <option value="">All brands</option>
+          @for (option of brandOptions(); track option.value) {
+            <option [value]="option.value">{{ option.label }} ({{ option.count }})</option>
+          }
+        </select>
+      </label>
+
+      <label class="filter-field price-filter">
+        <span class="price-label">Price range <span>INR</span></span>
+        <span class="price-inputs">
+          <label class="price-input">
+            <span>Min</span>
+            <span aria-hidden="true">₹</span>
+            <input
+              type="number"
+              min="0"
+              [max]="priceCeiling()"
+              step="500"
+              placeholder="Any"
+              aria-label="Minimum price in Indian rupees"
+              [ngModel]="minimumPrice() ?? ''"
+              (ngModelChange)="setMinimumPrice($event)"
+            />
+          </label>
+          <span class="price-separator" aria-hidden="true">—</span>
+          <label class="price-input">
+            <span>Max</span>
+            <span aria-hidden="true">₹</span>
+            <input
+              type="number"
+              [min]="minimumPrice() ?? 0"
+              [max]="priceCeiling()"
+              step="500"
+              placeholder="Any"
+              aria-label="Maximum price in Indian rupees"
+              [ngModel]="maximumPrice() ?? ''"
+              (ngModelChange)="setMaximumPrice($event)"
+            />
+          </label>
+        </span>
+        <span class="price-boundaries">
+          <span>From {{ priceFloor() | currency:'INR':'symbol':'1.0-0':'en-IN' }}</span>
+          <span>To {{ priceCeiling() | currency:'INR':'symbol':'1.0-0':'en-IN' }}</span>
+        </span>
+      </label>
+
+      <label class="filter-field sort-filter">
+        <span>Sort by</span>
+        <select aria-label="Sort watches" [ngModel]="sortOrder()" (ngModelChange)="sortOrder.set($event)">
+          <option value="featured">Featured</option>
+          <option value="price-low">Price: low to high</option>
+          <option value="price-high">Price: high to low</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="offers-filter">
+      <input type="checkbox" [ngModel]="specialOffersOnly()" (ngModelChange)="specialOffersOnly.set($event)" />
+      <span class="offers-check" aria-hidden="true"><i class="bi bi-check"></i></span>
+      <span>Show special offers only</span>
+    </label>
+  </section>
+
+  <div class="results-toolbar" aria-live="polite">
+    <p>
+      @if (loading()) {
+        <span>Curating the collection…</span>
+      } @else {
+        <strong>{{ filteredProducts().length }}</strong>
+        {{ filteredProducts().length === 1 ? 'timepiece' : 'timepieces' }} to discover
+      }
+    </p>
+    <span class="results-note"><i class="bi bi-check2-circle" aria-hidden="true"></i> Prices shown in INR</span>
   </div>
 
-  @if (isFiltered()) {
-    <p class="mb-4">
-      <a routerLink="/product-list">← Show all watches</a>
-    </p>
-  }
-
   @if (loading()) {
-    <div class="text-center py-5">
-      <div class="spinner-border" role="status"></div>
+    <div class="product-grid" aria-label="Loading watches">
+      @for (item of [1, 2, 3, 4]; track item) {
+        <div class="product-skeleton"></div>
+      }
     </div>
-  }
-
-  @if (!loading()) {
-    <div class="row g-4">
+  } @else {
+    <div class="product-grid">
       @for (product of filteredProducts(); track product.id) {
-        <div class="col-md-3">
-          <app-product-card [product]="product"></app-product-card>
-        </div>
+        <app-product-card [product]="product"></app-product-card>
       }
     </div>
 
     @if (filteredProducts().length === 0) {
-      <p class="text-muted">
-        {{ products().length === 0 && isFiltered()
-            ? 'No watches found here yet.'
-            : 'No products match your search.' }}
-      </p>
+      <section class="empty-listing">
+        <span class="empty-icon"><i class="bi bi-watch" aria-hidden="true"></i></span>
+        <span class="listing-eyebrow">A QUIETER MOMENT</span>
+        <h2>No watches found</h2>
+        <p>
+          {{ products().length === 0
+            ? 'Our collection is being refreshed. Please check back shortly.'
+            : 'Try adjusting your category, brand, or price filters.' }}
+        </p>
+        @if (isFiltered()) {
+          <button class="reset-button" type="button" (click)="resetFilters()">Clear all filters</button>
+        }
+      </section>
     }
   }
-
-</div>
+</main>

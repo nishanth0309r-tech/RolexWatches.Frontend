@@ -4,10 +4,16 @@
 </div>
 
 @if (loading()) {
-  <div class="loading-state">Loading dashboard...</div>
+  <div class="loading-state" role="status">Loading dashboard...</div>
 }
 
-@if (summary();as data) {
+@if (loadFailed()) {
+  <div class="dashboard-message" role="alert">
+    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+    <p>Dashboard information is unavailable right now.</p>
+    <button type="button" (click)="loadSummary()">Try again</button>
+  </div>
+} @else if (summary(); as data) {
   <div class="dashboard-grid">
     <div class="stat-card"><div class="stat-icon">📦</div><div><h3>Total Products</h3><p>{{ data.totalProducts }}</p></div></div>
     <div class="stat-card"><div class="stat-icon">🧾</div><div><h3>Total Orders</h3><p>{{ data.totalOrders }}</p></div></div>

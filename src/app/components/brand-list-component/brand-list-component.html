@@ -1,43 +1,66 @@
-<section class="page">
+<section class="catalog-admin">
   <div class="page-head">
-    <h1>Brands</h1>
-    <button type="button" class="btn primary" (click)="openAdd()">+ Add brand</button>
+    <div class="page-title">
+      <span class="page-eyebrow">CATALOG MANAGEMENT</span>
+      <h1>Brands</h1>
+      <p>Manage the watchmakers and labels in your collection.</p>
+    </div>
+    <div class="page-actions">
+      <span class="record-count"><i class="bi bi-award" aria-hidden="true"></i>{{ brands().length }} brands</span>
+      <button type="button" class="btn primary add-record" (click)="openAdd()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i><span>Add brand</span>
+      </button>
+    </div>
   </div>
 
   @if (loading()) {
-    <p>Loading…</p>
+    <div class="catalog-loading"><span class="loading-indicator"></span>Loading brands…</div>
   } @else {
     <div class="table-wrap">
+      <div class="table-toolbar">
+        <div><i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Brand directory</span></div>
+        <span>{{ brands().length }} {{ brands().length === 1 ? 'record' : 'records' }}</span>
+      </div>
       <table>
         <thead>
           <tr>
-            <th>Id</th><th>Logo</th><th>Name</th><th>Description</th><th>Products</th><th>Status</th><th>Actions</th>
+            <th>Brand</th><th>Description</th><th class="numeric-cell">Products</th><th>Status</th><th class="actions-heading">Actions</th>
           </tr>
         </thead>
         <tbody>
           @for (b of brands(); track b.id) {
             <tr>
-              <td>{{ b.id }}</td>
               <td>
-                @if (b.logoUrl) {
-                  <img [src]="b.logoUrl" [alt]="b.name" class="logo" />
-                } @else {
-                  <span class="muted">–</span>
-                }
-              </td>
-              <td>
-                <a [routerLink]="['/product-list']" [queryParams]="{ brand: b.id }" class="name-link">{{ b.name }}</a>
+                <div class="record-identity">
+                  <span class="brand-mark">
+                    @if (b.logoUrl) {
+                      <img [src]="b.logoUrl" [alt]="b.name" class="logo" />
+                    } @else {
+                      <i class="bi bi-watch" aria-hidden="true"></i>
+                    }
+                  </span>
+                  <span class="record-name">
+                    <a [routerLink]="['/product-list']" [queryParams]="{ brand: b.id }" class="name-link">{{ b.name }}</a>
+                    <small>#{{ b.id }}</small>
+                  </span>
+                </div>
               </td>
               <td class="desc">{{ b.description || '–' }}</td>
-              <td>{{ b.productCount }}</td>
+              <td class="numeric-cell"><span class="product-count">{{ b.productCount }}</span></td>
               <td>
                 <span class="badge" [class.off]="!b.isActive">{{ b.isActive ? 'Active' : 'Inactive' }}</span>
               </td>
               <td class="actions">
-                <button type="button" class="btn-edit" (click)="openEdit(b)">Edit</button>
-                <button type="button" class="btn-del" (click)="deleteBrand(b)" [disabled]="b.productCount > 0">Delete</button>
+                <button type="button" class="btn-edit" (click)="openEdit(b)" [attr.aria-label]="'Edit ' + b.name">
+                  <i class="bi bi-pencil" aria-hidden="true"></i><span>Edit</span>
+                </button>
+                <button type="button" class="btn-del" (click)="deleteBrand(b)" [disabled]="b.productCount > 0" [attr.aria-label]="'Delete ' + b.name">
+                  <i class="bi bi-trash3" aria-hidden="true"></i><span>Delete</span>
+                </button>
               </td>
             </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty-state"><i class="bi bi-award" aria-hidden="true"></i><strong>No brands yet</strong><span>Add your first brand to start building the collection.</span></td></tr>
           }
         </tbody>
       </table>
@@ -72,7 +95,7 @@
             <input type="checkbox" formControlName="isActive" /> Active
           </label>
 
-          <div class="modal-actions">
+          <div class="dialog-actions">
             <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
             <button type="submit" class="btn primary" [disabled]="saving()">
               {{ saving() ? 'Saving…' : 'Save' }}

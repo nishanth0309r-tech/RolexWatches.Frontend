@@ -1,0 +1,186 @@
+:host {
+  display: block;
+  min-height: 65vh;
+  background: linear-gradient(180deg, #f7f4ee 0%, #fff 100%);
+}
+
+.editorial-page {
+  width: min(calc(100% - 2rem), 1180px);
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+}
+
+.editorial-heading {
+  max-width: 760px;
+  margin: 0 auto clamp(2rem, 5vw, 3.5rem);
+  text-align: center;
+}
+
+.section-eyebrow {
+  display: block;
+  margin-bottom: 0.85rem;
+  color: var(--gold-600);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.editorial-heading h1 {
+  margin: 0;
+  color: var(--ink-900);
+  font-size: clamp(2.5rem, 5vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.editorial-heading p {
+  max-width: 62ch;
+  margin: 1rem auto 0;
+  color: var(--ink-600);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.story-panel {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.45fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border: 1px solid rgba(200, 169, 107, 0.25);
+  border-radius: 24px;
+  background: #fbfaf7;
+}
+
+.story-mark {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  border-radius: 18px;
+  background: radial-gradient(circle, #fff 10%, #efe6d6 100%);
+  color: var(--gold-600);
+  font-size: clamp(4rem, 10vw, 7rem);
+}
+
+.story-panel h2 {
+  margin: 0;
+  color: var(--ink-900);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.story-panel p,
+.value-grid p,
+.contact-card p {
+  color: var(--ink-600);
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+
+.editorial-cta,
+.collection-panel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+  color: var(--ink-900);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.editorial-cta span,
+.collection-panel a span { color: var(--gold-600); }
+
+.value-grid,
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.value-grid article,
+.contact-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.value-grid i,
+.contact-card > i {
+  color: var(--gold-600);
+  font-size: 1.5rem;
+}
+
+.value-grid h3,
+.contact-card h2 {
+  margin: 0.8rem 0 0;
+  color: var(--ink-900);
+  font-size: 1.05rem;
+}
+
+.value-grid p,
+.contact-card p { margin: 0.45rem 0 0; }
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.collection-panel {
+  display: flex;
+  min-height: 360px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.4rem;
+  overflow: hidden;
+  border-radius: 22px;
+  background-position: center;
+  background-size: cover;
+  color: #fff;
+  isolation: isolate;
+  position: relative;
+}
+
+.collection-panel::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 15, 23, 0.16), rgba(10, 15, 23, 0.86));
+  content: '';
+}
+
+.collection-luxury { background-image: url('https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80'); }
+.collection-automatic { background-image: url('https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80'); }
+.collection-everyday { background-image: url('https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80'); }
+.collection-number { color: #f2d18d; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; }
+.collection-panel h2 { margin: 0; font-size: 1.65rem; }
+.collection-panel p { margin: 0.5rem 0; color: rgba(255, 255, 255, 0.82); font-size: 0.83rem; line-height: 1.6; }
+.collection-panel a { color: #fff; }
+
+.contact-card a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #8f6730;
+  font-size: 0.82rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.contact-note {
+  margin: 1.3rem 0 0;
+  color: var(--ink-600);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .story-panel { grid-template-columns: 1fr; }
+  .story-mark { min-height: 140px; }
+  .value-grid,
+  .contact-grid,
+  .collection-grid { grid-template-columns: 1fr; }
+  .collection-panel { min-height: 280px; }
+}

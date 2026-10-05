@@ -1,7 +1,7 @@
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { CartService } from '../../services/cart';
@@ -14,7 +14,7 @@ import { ProductReviews } from '../product-reviews/product-reviews';
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CurrencyPipe, FormsModule,ProductReviews],
+  imports: [CurrencyPipe, FormsModule, RouterLink, ProductReviews],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
 })
@@ -22,13 +22,17 @@ export class ProductDetails implements OnInit {
   product = signal<Product | null>(null);
   loading = signal(true);
   quantity = signal(1);
+  selectedImageIndex = signal(0);
 
-  imageUrl = computed(() => {
-  const images = this.product()?.images;
-  return images?.find(i => i.isPrimary)?.imageUrl
-      ?? images?.[0]?.imageUrl
-      ?? 'https://placehold.co/500x500?text=No+Image';
-  });
+  galleryImages = computed(() =>
+    [...(this.product()?.images ?? [])].sort((a, b) =>
+      Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
+    )
+  );
+  imageUrl = computed(() =>
+    this.galleryImages()[this.selectedImageIndex()]?.imageUrl
+      ?? 'https://placehold.co/800x800/f4f1e9/6f695d?text=Flux+Time'
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -42,7 +46,7 @@ export class ProductDetails implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.productService.getById(id).subscribe({
-      next: (data) => { this.product.set(data); this.loading.set(false); },
+      next: (data) => { this.product.set(data); this.selectedImageIndex.set(0); this.loading.set(false); },
       error: () => { this.loading.set(false); }
     });
   }
@@ -74,7 +78,16 @@ export class ProductDetails implements OnInit {
   }
 
   setQuantity(value: number | string): void {
-  const n = Math.floor(Number(value));
-  this.quantity.set(Number.isFinite(n) && n >= 1 ? n : 1);
+    const n = Math.floor(Number(value));
+    this.quantity.set(Number.isFinite(n) && n >= 1 ? n : 1);
+  }
+
+  selectImage(index: number): void {
+    this.selectedImageIndex.set(index);
+  }
+
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'https://placehold.co/800x800/f4f1e9/6f695d?text=Flux+Time';
   }
 }

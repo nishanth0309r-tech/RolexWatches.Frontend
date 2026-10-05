@@ -1,42 +1,143 @@
 <header class="topbar">
-  <a routerLink="/home" class="brand">
-    <span class="mark">Watch<em>Hub</em></span>
+  <a routerLink="/home" class="brand" aria-label="Flux Time home">
+    <svg class="brand-emblem" viewBox="0 0 48 48" aria-hidden="true">
+      <path class="emblem-crest" d="M24 3.5 40 9v13.2c0 9.7-6.3 17-16 22.3-9.7-5.3-16-12.6-16-22.3V9z"></path>
+      <text class="emblem-letter" x="24" y="34" text-anchor="middle">F</text>
+      <path class="emblem-accent" d="m24 6.5 1.2 2.2L27.5 10l-2.3 1.2-1.2 2.3-1.2-2.3-2.3-1.2 2.3-1.3z"></path>
+    </svg>
+    <span class="brand-wordmark">
+      <span class="brand-name">Flux</span>
+      <span class="brand-sub">TIME</span>
+    </span>
   </a>
 
-  <nav class="tabs">
-    <a routerLink="/home" routerLinkActive="active">Home</a>
-    <a routerLink="/product-list" routerLinkActive="active">Shop</a>
+  <button
+    class="menu-toggle"
+    type="button"
+    [attr.aria-expanded]="menuOpen"
+    aria-controls="main-navigation"
+    [attr.aria-label]="menuOpen ? 'Close navigation menu' : 'Open navigation menu'"
+    (click)="toggleMenu()"
+  >
+    <i class="bi" [class.bi-list]="!menuOpen" [class.bi-x-lg]="menuOpen" aria-hidden="true"></i>
+  </button>
+
+  <nav id="main-navigation" class="tabs" [class.menu-open]="menuOpen" aria-label="Main navigation">
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
+    <a routerLink="/product-list" routerLinkActive="active" (click)="closeMenu()">Watches</a>
+    <a routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">Collections</a>
+    <a routerLink="/brands" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Brands</a>
+    <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
 
     @if (auth.currentUser(); as user) {
       @if (user.role === 'Admin') {
-        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
-        <a routerLink="/admin/brands" routerLinkActive="active">Brands</a>
-        <a routerLink="/admin/categories" routerLinkActive="active">Categories</a>
-        <a routerLink="/admin/customers" routerLinkActive="active">Customers</a>
-        <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
-        <a routerLink="/admin/reviews" routerLinkActive="active">Reviews</a>
+        <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+        <a routerLink="/admin/customers" routerLinkActive="active" (click)="closeMenu()">Customers</a>
+        <a routerLink="/admin/brands" routerLinkActive="active" (click)="closeMenu()">Manage brands</a>
+        <a routerLink="/admin/categories" routerLinkActive="active" (click)="closeMenu()">Categories</a>
+        <a routerLink="/admin/orders" routerLinkActive="active" (click)="closeMenu()">Manage orders</a>
+        <a routerLink="/admin/reviews" routerLinkActive="active" (click)="closeMenu()">Reviews</a>
       } @else {
-        <a routerLink="/wishlist" routerLinkActive="active">Wishlist</a>
-        <a routerLink="/orders" routerLinkActive="active">My Orders</a>
-        <a routerLink="/cart" routerLinkActive="active">
-          Cart
-          @if ((cart.cartCount$ | async); as count) {
-            <span class="badge">{{ count }}</span>
-          }
-        </a>
+        <a routerLink="/wishlist" routerLinkActive="active" (click)="closeMenu()">Wishlist</a>
+        <a routerLink="/orders" routerLinkActive="active" (click)="closeMenu()">Orders</a>
       }
+    } @else {
+      <a class="mobile-auth-link" routerLink="/login" (click)="closeMenu()">Login</a>
+      <a class="mobile-auth-link" routerLink="/register" (click)="closeMenu()">Create an account</a>
     }
   </nav>
 
   <div class="account">
+    <button
+      class="nav-icon"
+      type="button"
+      [attr.aria-expanded]="searchOpen"
+      aria-label="Search products"
+      (click)="toggleSearch()"
+    >
+      <i class="bi bi-search" aria-hidden="true"></i>
+    </button>
+
+    <div class="more-menu" (click)="$event.stopPropagation()">
+      <button
+        class="nav-icon more-menu-toggle"
+        type="button"
+        aria-label="More options"
+        aria-controls="more-menu-panel"
+        [attr.aria-expanded]="moreMenuOpen"
+        (click)="toggleMoreMenu()"
+      >
+        <i class="bi bi-three-dots" aria-hidden="true"></i>
+      </button>
+
+      @if (moreMenuOpen) {
+        <section id="more-menu-panel" class="more-menu-panel" aria-label="More options">
+          @if (auth.currentUser(); as user) {
+            <div class="more-menu-user">
+              <span class="more-menu-avatar" aria-hidden="true">{{ user.fullName.charAt(0).toUpperCase() }}</span>
+              <span class="more-menu-user-copy">
+                <strong>{{ user.fullName }}</strong>
+                <span>{{ user.email }}</span>
+              </span>
+            </div>
+            <a routerLink="/profile" (click)="closeMoreMenu()"><i class="bi bi-person" aria-hidden="true"></i>My profile</a>
+            <a routerLink="/orders" (click)="closeMoreMenu()"><i class="bi bi-box-seam" aria-hidden="true"></i>My orders</a>
+            <a routerLink="/wishlist" (click)="closeMoreMenu()"><i class="bi bi-heart" aria-hidden="true"></i>Wishlist</a>
+            @if (user.role === 'Admin') {
+              <a routerLink="/admin/dashboard" (click)="closeMoreMenu()"><i class="bi bi-speedometer2" aria-hidden="true"></i>Admin dashboard</a>
+            }
+            <a routerLink="/contact" (click)="closeMoreMenu()"><i class="bi bi-chat-dots" aria-hidden="true"></i>Help &amp; support</a>
+            <button type="button" class="more-menu-logout" (click)="closeMoreMenu(); auth.logout()">
+              <i class="bi bi-box-arrow-right" aria-hidden="true"></i>Sign out
+            </button>
+          } @else {
+            <a routerLink="/login" (click)="closeMoreMenu()"><i class="bi bi-person" aria-hidden="true"></i>Sign in</a>
+            <a routerLink="/register" (click)="closeMoreMenu()"><i class="bi bi-person-plus" aria-hidden="true"></i>Create account</a>
+            <a routerLink="/contact" (click)="closeMoreMenu()"><i class="bi bi-chat-dots" aria-hidden="true"></i>Help &amp; support</a>
+            <a routerLink="/about" (click)="closeMoreMenu()"><i class="bi bi-info-circle" aria-hidden="true"></i>About Flux Time</a>
+          }
+        </section>
+      }
+    </div>
+
     @if (auth.currentUser(); as user) {
+      <a class="nav-icon" routerLink="/wishlist" aria-label="Wishlist">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+      </a>
+      <a class="nav-icon cart-link" routerLink="/cart" aria-label="Shopping cart">
+        <i class="bi bi-bag" aria-hidden="true"></i>
+        @if ((cart.cartCount$ | async); as count) {
+          <span class="badge">{{ count }}</span>
+        }
+      </a>
       <span class="user-name">{{ user.fullName }}</span>
       <button type="button" class="logout-btn" (click)="auth.logout()">Logout</button>
     } @else {
-      <div class="tabs">
-        <a routerLink="/login" routerLinkActive="active">Login</a>
-        <a routerLink="/register" routerLinkActive="active">Register</a>
-      </div>
+      <a class="nav-icon" routerLink="/wishlist" aria-label="Wishlist">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+      </a>
+      <a class="nav-icon cart-link" routerLink="/cart" aria-label="Shopping cart">
+        <i class="bi bi-bag" aria-hidden="true"></i>
+      </a>
+      <a routerLink="/login" class="login-link">Login</a>
+      <a routerLink="/register" class="register-link">Register</a>
     }
   </div>
 </header>
+
+@if (searchOpen) {
+  <form class="nav-search" role="search" (ngSubmit)="searchProducts()">
+    <label for="nav-product-search">Search watches</label>
+    <input
+      id="nav-product-search"
+      type="search"
+      name="q"
+      [value]="searchTerm"
+      (input)="updateSearchTerm($event)"
+      placeholder="Search the collection"
+      autocomplete="off"
+    >
+    <button type="submit" [disabled]="!searchTerm.trim()">Search</button>
+  </form>
+}

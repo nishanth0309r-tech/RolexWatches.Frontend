@@ -1,55 +1,82 @@
-<div class="container py-4">
+<main class="product-details-page container">
   @if (loading()) {
-    <div class="text-center py-5">
+    <div class="details-loading text-center py-5">
       <div class="spinner-border" role="status"></div>
     </div>
   } @else if (product(); as p) {
-    <div class="row">
-      <div class="col-md-6">
-        <img
-          [src]="imageUrl()"
-          class="img-fluid rounded"
-          [alt]="p.name"
-          (error)="$any($event.target).src='https://placehold.co/500x500?text=No+Image'"
-        >
+    <div class="product-detail-grid">
+      <div class="product-gallery">
+        <div class="gallery-main">
+          <img [src]="imageUrl()" [alt]="p.name" (error)="onImageError($event)">
+        </div>
+        @if (galleryImages().length > 1) {
+          <div class="gallery-thumbnails" aria-label="Product images">
+            @for (image of galleryImages(); track image.id; let index = $index) {
+              <button
+                type="button"
+                class="gallery-thumbnail"
+                [class.is-selected]="selectedImageIndex() === index"
+                [attr.aria-label]="'Show product image ' + (index + 1)"
+                [attr.aria-pressed]="selectedImageIndex() === index"
+                (click)="selectImage(index)"
+              >
+                <img [src]="image.imageUrl" [alt]="p.name + ' view ' + (index + 1)" (error)="onImageError($event)">
+              </button>
+            }
+          </div>
+        }
       </div>
 
-      <div class="col-md-6">
-        <h2>{{ p.name }}</h2>
+      <section class="product-summary">
+        <a routerLink="/product-list" class="back-to-shop"><span aria-hidden="true">←</span> Back to the collection</a>
+        @if (p.brandName) {
+          <span class="detail-brand">{{ p.brandName }}</span>
+        }
+        <h1>{{ p.name }}</h1>
+        @if (p.categoryName) {
+          <p class="detail-category">{{ p.categoryName }}</p>
+        }
 
-        <p class="fs-4 fw-bold">
+        <p class="detail-price">
           @if (p.discountPrice) {
-            <span class="text-danger me-2">{{ p.discountPrice | currency }}</span>
-            <span class="text-decoration-line-through text-muted">{{ p.price | currency }}</span>
+            <span class="sale-price">{{ p.discountPrice | currency }}</span>
+            <span class="original-price">{{ p.price | currency }}</span>
           } @else {
             <span>{{ p.price | currency }}</span>
           }
         </p>
 
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <label for="qty">Quantity:</label>
+        @if (p.description) {
+          <p class="detail-description">{{ p.description }}</p>
+        }
+
+        <div class="detail-divider"></div>
+        <div class="quantity-field">
+          <label for="qty">Quantity</label>
           <input
             id="qty"
             type="number"
-            class="form-control"
-            style="max-width: 100px"
             min="1"
             [ngModel]="quantity()"
             (ngModelChange)="setQuantity($event)"
           >
         </div>
 
-        <div class="d-flex gap-2">
-          <button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
-          <button class="btn btn-outline-danger" (click)="addToWishlist()">
-            <i class="bi bi-heart"></i> Wishlist
+        <div class="detail-actions">
+          <button class="detail-add" type="button" (click)="addToCart()">Add to bag</button>
+          <button class="detail-wishlist" type="button" (click)="addToWishlist()">
+            <i class="bi bi-heart" aria-hidden="true"></i><span>Save</span>
           </button>
         </div>
-      </div>
+        <div class="detail-assurance">
+          <p><i class="bi bi-box-seam" aria-hidden="true"></i> Complimentary delivery on every order</p>
+          <p><i class="bi bi-shield-check" aria-hidden="true"></i> Carefully selected, quality timepieces</p>
+        </div>
+      </section>
     </div>
 
     <app-product-reviews [productId]="p.id" />
   } @else {
-    <p class="text-muted">Product not found.</p>
+    <p class="product-not-found">We couldn’t find that timepiece. <a routerLink="/product-list">Browse the Flux Time collection</a>.</p>
   }
-</div>
+</main>
