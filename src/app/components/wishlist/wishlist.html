@@ -12,9 +12,15 @@
       @for (item of items(); track item.productId) {
         <div class="col-md-4">
           <div class="card h-100">
-            <img [src]="item.imageUrl" class="card-img-top" style="height: 180px; object-fit: cover;">
+            <a [routerLink]="['/product-details', item.productId]">
+              <img [src]="item.imageUrl" [alt]="item.productName" class="card-img-top" style="height: 180px; object-fit: cover;">
+            </a>
             <div class="card-body">
-              <h6>{{ item.productName }}</h6>
+              <h6>
+                <a [routerLink]="['/product-details', item.productId]" class="text-decoration-none text-body">
+                  {{ item.productName }}
+                </a>
+              </h6>
               <p class="fw-bold">${{ item.price }}</p>
               <div class="d-flex gap-2">
                 <button class="btn btn-primary btn-sm" (click)="moveToCart(item)">Move to Cart</button>

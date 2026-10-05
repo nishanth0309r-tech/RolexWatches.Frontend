@@ -12,9 +12,13 @@
     <div class="rows">
       @for (item of items(); track item.id) {
         <div class="row">
-          <img [src]="item.imageUrl" [alt]="item.productName" />
+          <a [routerLink]="['/product-details', item.productId]">
+            <img [src]="item.imageUrl" [alt]="item.productName" />
+          </a>
           <div class="info">
-            <h3>{{ item.productName }}</h3>
+            <h3>
+              <a [routerLink]="['/product-details', item.productId]">{{ item.productName }}</a>
+            </h3>
             <p>{{ item.price | currency }}</p>
           </div>
           <div class="qty">
