@@ -1,5 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, Inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product-service';
 import { CategoryService } from '../../services/category-service';   // adjust to your file name
@@ -8,6 +8,18 @@ import { staggerFadeIn } from '../../animations/list-animations';
 import { Product } from '../../models/product';
 
 interface HomeCategory { id: number; name: string; icon: string; }
+interface CampaignSlide {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  cta: string;
+  route: string[];
+  queryParams?: Record<string, boolean>;
+  fragment?: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -18,20 +30,57 @@ interface HomeCategory { id: number; name: string; icon: string; }
   animations: [staggerFadeIn]
 })
 export class Home implements OnInit, OnDestroy {
+  readonly campaignSlides: CampaignSlide[] = [
+    {
+      id: 'best-sellers',
+      eyebrow: 'THE FLUX TIME EDIT',
+      title: 'Best sellers, made to be remembered.',
+      description: 'Discover the timepieces customers return to, chosen for their enduring design and everyday presence.',
+      image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=2200&q=85',
+      imageAlt: 'Refined stainless steel watch with a dark dial',
+      cta: 'Shop best sellers',
+      route: ['/home'],
+      fragment: 'featured-products'
+    },
+    {
+      id: 'special-offers',
+      eyebrow: 'A MOMENT TO DISCOVER',
+      title: 'Exceptional watches. Special prices.',
+      description: 'Explore selected timepieces with special pricing while they are available.',
+      image: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=2200&q=85',
+      imageAlt: 'Luxury watch showcased in warm golden light',
+      cta: 'Explore special prices',
+      route: ['/product-list'],
+      queryParams: { offer: true }
+    },
+    {
+      id: 'new-arrivals',
+      eyebrow: 'JUST ARRIVED',
+      title: 'Meet your next modern classic.',
+      description: 'Fresh designs and considered details bring a new perspective to every hour.',
+      image: 'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=2200&q=85',
+      imageAlt: 'Contemporary watch with a polished metal bracelet',
+      cta: 'Discover new arrivals',
+      route: ['/product-list']
+    }
+  ];
+  activeSlideIndex = signal(0);
+  slideshowPaused = signal(false);
   products = signal<Product[]>([]);
   dealProducts = signal<Product[]>([]);
+  featuredProducts = computed(() => {
+    const deals = this.dealProducts();
+    return deals.length > 0 ? deals.slice(0, 3) : this.products().slice(0, 3);
+  });
+  moreProducts = computed(() => {
+    const featuredIds = new Set(this.featuredProducts().map(product => product.id));
+    return this.products()
+      .filter(product => !featuredIds.has(product.id))
+      .slice(0, 3);
+  });
   categories = signal<HomeCategory[]>([]);
   loading = signal(true);
-
-  current = signal(0);
-  paused = false;
-  private timer: ReturnType<typeof setInterval> | null = null;
-
-  banners = [
-    { title: 'New Arrivals', subtitle: 'The latest timepieces, freshly in stock', cta: 'Shop Now', link: '/product-list', bg: 'linear-gradient(135deg, #1a1a2e, #16213e)' },
-    { title: 'Up to 15% Off', subtitle: 'Selected watches this week only', cta: 'View Deals', link: '/product-list', bg: 'linear-gradient(135deg, #2c1810, #4a2c17)' },
-    { title: 'Free Shipping', subtitle: 'On every order, no minimum', cta: 'Browse Watches', link: '/product-list', bg: 'linear-gradient(135deg, #0f2027, #203a43)' },
-  ];
+  private slideshowTimer: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     private productService: ProductService,
@@ -40,6 +89,11 @@ export class Home implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.slideshowPaused.set(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+      this.startSlideshow();
+    }
+
     this.productService.getAll().subscribe({
       next: data => {
         this.products.set(data);
@@ -54,20 +108,43 @@ export class Home implements OnInit, OnDestroy {
         cats.slice(0, 6).map(c => ({ id: c.id, name: c.name, icon: this.iconFor(c.name) }))
       )
     });
-
-    // auto-slide only in the browser (not during server-side rendering)
-    if (isPlatformBrowser(this.platformId)) {
-      this.timer = setInterval(() => { if (!this.paused) this.next(); }, 5000);
-    }
   }
 
   ngOnDestroy(): void {
-    if (this.timer) clearInterval(this.timer);
+    this.stopSlideshow();
   }
 
-  next(): void { this.current.set((this.current() + 1) % this.banners.length); }
-  prev(): void { this.current.set((this.current() - 1 + this.banners.length) % this.banners.length); }
-  goTo(i: number): void { this.current.set(i); }
+  showSlide(index: number): void {
+    this.activeSlideIndex.set((index + this.campaignSlides.length) % this.campaignSlides.length);
+    this.restartSlideshow();
+  }
+
+  toggleSlideshow(): void {
+    this.slideshowPaused.update(paused => !paused);
+    this.restartSlideshow();
+  }
+
+  private startSlideshow(): void {
+    this.stopSlideshow();
+    if (!this.slideshowPaused()) {
+      this.slideshowTimer = setInterval(() => {
+        this.activeSlideIndex.update(index => (index + 1) % this.campaignSlides.length);
+      }, 3500);
+    }
+  }
+
+  private stopSlideshow(): void {
+    if (this.slideshowTimer !== undefined) {
+      clearInterval(this.slideshowTimer);
+      this.slideshowTimer = undefined;
+    }
+  }
+
+  private restartSlideshow(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.startSlideshow();
+    }
+  }
 
   private iconFor(name: string): string {
     const n = name.toLowerCase();

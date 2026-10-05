@@ -1,12 +1,40 @@
-<h2>Customers</h2>
-<table>
-  <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
-  <tbody>
-    <tr *ngFor="let c of customers()">
-      <td>{{ c.fullName }}</td>
-      <td>{{ c.email }}</td>
-      <td>{{ c.isActive ? 'Active' : 'Blocked' }}</td>
-      <td><button (click)="toggleBlock(c)">{{ c.isActive ? 'Block' : 'Unblock' }}</button></td>
-    </tr>
-  </tbody>
-</table>
+<section class="customers-page">
+  <header class="customers-heading">
+    <div>
+      <span class="page-eyebrow">STORE MANAGEMENT</span>
+      <h1>Customers</h1>
+      <p>Review customer accounts and manage access to the store.</p>
+    </div>
+    @if (!loading() && !loadFailed()) {
+      <span class="customer-count">{{ customers().length }} {{ customers().length === 1 ? 'customer' : 'customers' }}</span>
+    }
+  </header>
+
+  @if (loading()) {
+    <div class="customers-state" role="status"><span class="loading-indicator"></span>Loading customers…</div>
+  } @else if (loadFailed()) {
+    <div class="customers-state" role="alert">
+      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+      <p>Customer information is unavailable right now.</p>
+      <button type="button" (click)="loadCustomers()">Try again</button>
+    </div>
+  } @else {
+    <div class="customer-table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Status</th><th class="action-column">Action</th></tr></thead>
+        <tbody>
+          @for (c of customers(); track c.id) {
+            <tr>
+              <td><strong>{{ c.fullName }}</strong></td>
+              <td>{{ c.email }}</td>
+              <td><span class="customer-status" [class.blocked]="!c.isActive">{{ c.isActive ? 'Active' : 'Blocked' }}</span></td>
+              <td class="action-column"><button type="button" [class.unblock]="!c.isActive" (click)="toggleBlock(c)">{{ c.isActive ? 'Block' : 'Unblock' }}</button></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4" class="empty-customers"><i class="bi bi-people" aria-hidden="true"></i><strong>No customers yet</strong><span>Customer accounts will appear here after registration.</span></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

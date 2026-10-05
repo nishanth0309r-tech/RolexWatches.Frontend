@@ -1,0 +1,45 @@
+<main class="brand-directory">
+  <header class="directory-heading">
+    <span class="section-eyebrow">THE MAKERS</span>
+    <h1>Discover our brands</h1>
+    <p>Explore timepieces from the watchmakers behind every great moment.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="directory-state" role="status">Loading brands…</div>
+  } @else if (loadFailed()) {
+    <div class="directory-state" role="alert">
+      The brand directory could not be loaded. Please try again in a moment.
+    </div>
+  } @else if (brands().length > 0) {
+    <section class="brand-grid" aria-label="Available watch brands">
+      @for (brand of brands(); track brand.id) {
+        <a
+          class="brand-card"
+          [routerLink]="['/product-list']"
+          [queryParams]="{ brand: brand.id }"
+          [attr.aria-label]="'Shop ' + brand.name + ' watches'"
+        >
+          <span class="brand-logo">
+            @if (brand.logoUrl) {
+              <img [src]="brand.logoUrl" [alt]="brand.name" loading="lazy">
+            } @else {
+              <i class="bi bi-watch" aria-hidden="true"></i>
+            }
+          </span>
+          <span class="brand-details">
+            <strong>{{ brand.name }}</strong>
+            @if (brand.description) {
+              <span>{{ brand.description }}</span>
+            } @else {
+              <span>Discover the collection</span>
+            }
+          </span>
+          <span class="brand-arrow" aria-hidden="true">↗</span>
+        </a>
+      }
+    </section>
+  } @else {
+    <div class="directory-state">There are no brands to display right now.</div>
+  }
+</main>

@@ -9,13 +9,16 @@ export const appRoutes: Routes = [
   { path: 'register', loadComponent: () => import('./components/register/register').then(m => m.Register) },
   { path: 'product-list', loadComponent: () => import('./components/product-list/product-list').then(m => m.ProductList) },
   { path: 'product-details/:id', loadComponent: () => import('./components/product-details/product-details').then(m => m.ProductDetails) },
+  { path: 'brands', loadComponent: () => import('./components/brand-directory/brand-directory').then(m => m.BrandDirectory) },
+  { path: 'about', loadComponent: () => import('./components/editorial-page/editorial-page').then(m => m.EditorialPage), data: { page: 'about' } },
+  { path: 'collections', loadComponent: () => import('./components/editorial-page/editorial-page').then(m => m.EditorialPage), data: { page: 'collections' } },
+  { path: 'contact', loadComponent: () => import('./components/editorial-page/editorial-page').then(m => m.EditorialPage), data: { page: 'contact' } },
 
   // ---- Logged-in users (customers, and admins too) ----
+  { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./components/profile/profile').then(m => m.Profile) },
   { path: 'checkout', canActivate: [authGuard], loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout) },
-  { path: 'payment/:orderId', canActivate: [authGuard], loadComponent: () => import('./components/payment/payment').then(m => m.Payment) },
   { path: 'payment/:orderId', canActivate: [authGuard], loadComponent: () => import('./components/payment/payment').then(m => m.Payment) },
   { path: 'cart', canActivate: [authGuard], loadComponent: () => import('./components/cart/cart').then(m => m.Cart) },
-  { path: 'checkout', canActivate: [authGuard], loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout) },
   { path: 'wishlist', canActivate: [authGuard], loadComponent: () => import('./components/wishlist/wishlist').then(m => m.Wishlist) },
   { path: 'orders', canActivate: [authGuard], loadComponent: () => import('./components/orders/orders').then(m => m.Orders) },
 

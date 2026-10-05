@@ -16,8 +16,26 @@ export class CustomerListComponent implements OnInit {
   private toastr = inject(ToastrService);
 
   customers = signal<Customer[]>([]);
+  loading = signal(true);
+  loadFailed = signal(false);
 
-  ngOnInit(): void { this.customerService.getAll().subscribe(data => this.customers.set(data)); }
+  ngOnInit(): void { this.loadCustomers(); }
+
+  loadCustomers(): void {
+    this.loading.set(true);
+    this.loadFailed.set(false);
+    this.customerService.getAll().subscribe({
+      next: data => {
+        this.customers.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loadFailed.set(true);
+        this.loading.set(false);
+        this.toastr.error('Failed to load customers');
+      }
+    });
+  }
 
   toggleBlock(customer: Customer): void {
     this.customerService.toggleBlock(customer.id).subscribe({
