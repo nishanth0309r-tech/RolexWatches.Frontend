@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { WishlistItem } from '../../models/wishlist.model';
 import { WishlistService } from '../../services/wishlist';
@@ -9,7 +9,7 @@ import { CartService } from '../../services/cart';
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule],
+  imports: [ RouterLink],
   templateUrl: './wishlist.html',
   styleUrl: './wishlist.css'
 })
