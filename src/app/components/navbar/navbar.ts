@@ -1,4 +1,5 @@
 import { Component, HostListener, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { CartService } from '../../services/cart';
@@ -7,7 +8,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, AsyncPipe],
+  imports: [FormsModule, RouterLink, RouterLinkActive, AsyncPipe],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })

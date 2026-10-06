@@ -65,13 +65,41 @@ describe('Navbar', () => {
     expect(signedInMenu.textContent).toContain('Wishlist');
   });
 
-  it('searches the product list using the entered query', () => {
-    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    component.searchTerm = '  Datejust  ';
+  it('keeps Wishlist in the icon shortcut but removes its duplicate main navigation link', () => {
+    component.auth.currentUser.set({
+      id: 1,
+      fullName: 'Flux Customer',
+      email: 'customer@example.com',
+      role: 'Customer'
+    });
+    fixture.detectChanges();
 
-    component.searchProducts();
+    const navigation = fixture.nativeElement.querySelector('#main-navigation') as HTMLElement;
+    const wishlistIcon = fixture.nativeElement.querySelector('.account a[aria-label="Wishlist"]') as HTMLAnchorElement;
+
+    expect(navigation.textContent).not.toContain('Wishlist');
+    expect(wishlistIcon).not.toBeNull();
+    expect(wishlistIcon.getAttribute('href')).toContain('/wishlist');
+  });
+
+  it('submits the header search to the product list without a native page reload', () => {
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
+    const searchToggle = fixture.nativeElement.querySelector('[aria-label="Search products"]') as HTMLButtonElement;
+    searchToggle.click();
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector('#nav-product-search') as HTMLInputElement;
+    input.value = '  Datejust  ';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    const form = fixture.nativeElement.querySelector('.nav-search') as HTMLFormElement;
+    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+    form.dispatchEvent(submitEvent);
 
     expect(navigate).toHaveBeenCalledWith(['/product-list'], { queryParams: { q: 'Datejust' } });
+    expect(submitEvent.defaultPrevented).toBe(true);
     expect(component.searchOpen).toBe(false);
     expect(component.menuOpen).toBe(false);
   });
@@ -118,5 +146,14 @@ describe('Navbar', () => {
     expect(aboutLink).not.toBeNull();
     expect(collectionsLink).not.toBeNull();
     expect(contactLink).not.toBeNull();
+  });
+
+  it('keeps About and Contact as the last main navigation items', () => {
+    fixture.detectChanges();
+    const links = Array.from(
+      (fixture.nativeElement.querySelector('#main-navigation') as HTMLElement).querySelectorAll('a')
+    ) as HTMLAnchorElement[];
+
+    expect(links.slice(-2).map(link => link.textContent?.trim())).toEqual(['About', 'Contact']);
   });
 });

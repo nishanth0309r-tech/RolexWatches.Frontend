@@ -16,8 +16,16 @@
   <label>Stock</label>
   <input type="number" formControlName="stock" />
 
-  <label>Image URL</label>
-  <input formControlName="imageUrl" />
+  <label for="primary-image-url">Primary image URL</label>
+  <input id="primary-image-url" formControlName="imageUrl" />
+
+  <label for="additional-image-urls">Additional image URLs (one per line)</label>
+  <textarea
+    id="additional-image-urls"
+    formControlName="additionalImageUrls"
+    rows="4"
+    placeholder="Add side, back, or detail view URLs"
+  ></textarea>
 
   <img *ngIf="form.get('imageUrl')?.value"
        [src]="form.get('imageUrl')?.value"

@@ -52,8 +52,23 @@ describe('ProductDetails', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    fixture.componentInstance.selectImage(1);
+    const thumbnails = fixture.nativeElement.querySelectorAll('.gallery-thumbnail') as NodeListOf<HTMLButtonElement>;
+    thumbnails[1].click();
+    fixture.detectChanges();
 
     expect(fixture.componentInstance.imageUrl()).toBe('/watch-side.jpg');
+    expect((fixture.nativeElement.querySelector('.gallery-main img') as HTMLImageElement).src).toContain('/watch-side.jpg');
+  });
+
+  it('shows the legacy single image when no image gallery is provided', async () => {
+    const fixture = TestBed.createComponent(ProductDetails);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.componentInstance.product.set({ ...product, images: [], imageUrl: '/watch-front.jpg' });
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.galleryImages()).toHaveLength(1);
+    expect(fixture.nativeElement.querySelector('.gallery-thumbnail')).toBeNull();
+    expect(fixture.componentInstance.imageUrl()).toBe('/watch-front.jpg');
   });
 });

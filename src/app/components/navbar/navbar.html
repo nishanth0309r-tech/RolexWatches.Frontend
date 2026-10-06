@@ -27,8 +27,6 @@
     <a routerLink="/product-list" routerLinkActive="active" (click)="closeMenu()">Watches</a>
     <a routerLink="/collections" routerLinkActive="active" (click)="closeMenu()">Collections</a>
     <a routerLink="/brands" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Brands</a>
-    <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
-    <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
 
     @if (auth.currentUser(); as user) {
       @if (user.role === 'Admin') {
@@ -39,13 +37,15 @@
         <a routerLink="/admin/orders" routerLinkActive="active" (click)="closeMenu()">Manage orders</a>
         <a routerLink="/admin/reviews" routerLinkActive="active" (click)="closeMenu()">Reviews</a>
       } @else {
-        <a routerLink="/wishlist" routerLinkActive="active" (click)="closeMenu()">Wishlist</a>
         <a routerLink="/orders" routerLinkActive="active" (click)="closeMenu()">Orders</a>
       }
     } @else {
       <a class="mobile-auth-link" routerLink="/login" (click)="closeMenu()">Login</a>
       <a class="mobile-auth-link" routerLink="/register" (click)="closeMenu()">Create an account</a>
     }
+
+    <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
   </nav>
 
   <div class="account">

@@ -20,11 +20,18 @@ export class ProductCard {
 
   private readonly fallbackImage = 'https://placehold.co/600x600/f4f1e9/6f695d?text=Flux+Time';
 
-  galleryImages = computed(() =>
-    [...(this.product().images ?? [])].sort((a, b) =>
-      Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
-    )
-  );
+  galleryImages = computed(() => {
+    const product = this.product();
+    if (product.images?.length) {
+      return [...product.images].sort((a, b) =>
+        Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
+      );
+    }
+
+    return product.imageUrl
+      ? [{ id: product.id, imageUrl: product.imageUrl, isPrimary: true, displayOrder: 0 }]
+      : [];
+  });
   imageUrl = computed(() =>
     this.galleryImages()[this.selectedImageIndex()]?.imageUrl
       ?? this.galleryImages()[0]?.imageUrl

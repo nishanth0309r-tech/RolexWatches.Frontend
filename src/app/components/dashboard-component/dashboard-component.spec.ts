@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ToastrService } from 'ngx-toastr';
-import { of, throwError } from 'rxjs';
+import { NEVER, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { DashboardService } from '../../services/dashboard-service';
 import { DashboardComponent } from './dashboard-component';
@@ -36,8 +36,10 @@ describe('DashboardComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Total Products');
-    expect(fixture.nativeElement.textContent).toContain('Total Customers');
+    expect(fixture.nativeElement.textContent).toContain('Total products');
+    expect(fixture.nativeElement.textContent).toContain('Total customers');
+    expect(fixture.nativeElement.textContent).toContain('Store overview');
+    expect(fixture.nativeElement.textContent).toContain('Recent orders');
   });
 
   it('shows a retry action when dashboard data fails to load', async () => {
@@ -48,5 +50,13 @@ describe('DashboardComponent', () => {
 
     expect(fixture.nativeElement.querySelector('[role="alert"]')).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Try again');
+  });
+
+  it('shows a branded loading state while the summary is pending', () => {
+    dashboardService.getSummary.mockReturnValue(NEVER);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[aria-label="Loading dashboard"]')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Preparing your store overview');
   });
 });

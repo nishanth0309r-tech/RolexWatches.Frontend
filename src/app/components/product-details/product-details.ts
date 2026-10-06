@@ -24,11 +24,20 @@ export class ProductDetails implements OnInit {
   quantity = signal(1);
   selectedImageIndex = signal(0);
 
-  galleryImages = computed(() =>
-    [...(this.product()?.images ?? [])].sort((a, b) =>
-      Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
-    )
-  );
+  galleryImages = computed(() => {
+    const product = this.product();
+    if (!product) return [];
+
+    if (product.images?.length) {
+      return [...product.images].sort((a, b) =>
+        Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
+      );
+    }
+
+    return product.imageUrl
+      ? [{ id: product.id, imageUrl: product.imageUrl, isPrimary: true, displayOrder: 0 }]
+      : [];
+  });
   imageUrl = computed(() =>
     this.galleryImages()[this.selectedImageIndex()]?.imageUrl
       ?? 'https://placehold.co/800x800/f4f1e9/6f695d?text=Flux+Time'
@@ -83,7 +92,9 @@ export class ProductDetails implements OnInit {
   }
 
   selectImage(index: number): void {
-    this.selectedImageIndex.set(index);
+    if (index >= 0 && index < this.galleryImages().length) {
+      this.selectedImageIndex.set(index);
+    }
   }
 
   onImageError(event: Event): void {
