@@ -39,10 +39,10 @@
       }
       <span class="watch-price">
         @if (product().discountPrice) {
-          <span class="sale-price">{{ product().discountPrice | currency:'INR':'symbol':'1.0-2':'en-IN' }}</span>
+          <span class="sale-price">{{ product().discountPrice | currency:'USD':'symbol':'1.0-2':'en-US' }}</span>
         }
         <span [class.original-price]="product().discountPrice">
-          {{ product().price | currency:'INR':'symbol':'1.0-2':'en-IN' }}
+          {{ product().price | currency:'USD':'symbol':'1.0-2':'en-US' }}
         </span>
       </span>
     </a>

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { registerLocaleData } from '@angular/common';
-import localeEnIn from '@angular/common/locales/en-IN';
+import localeEn from '@angular/common/locales/en';
 import { provideRouter } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
@@ -10,7 +10,7 @@ import { WishlistService } from '../../services/wishlist';
 import { Product } from '../../models/product';
 import { ProductCard } from './product-card';
 
-registerLocaleData(localeEnIn);
+registerLocaleData(localeEn);
 
 describe('ProductCard', () => {
   const product: Product = {
@@ -56,11 +56,11 @@ describe('ProductCard', () => {
     expect(fixture.nativeElement.querySelectorAll('.watch-thumbnail')).toHaveLength(2);
   });
 
-  it('formats product prices with Indian rupees and digit grouping', () => {
+  it('formats product prices with US dollars and digit grouping', () => {
     const fixture = TestBed.createComponent(ProductCard);
     fixture.componentRef.setInput('product', { ...product, price: 120000 });
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('₹1,20,000');
+    expect(fixture.nativeElement.textContent).toContain('$120,000');
   });
 });

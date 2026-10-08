@@ -47,18 +47,18 @@
       </label>
 
       <label class="filter-field price-filter">
-        <span class="price-label">Price range <span>INR</span></span>
+        <span class="price-label">Price range <span>USD</span></span>
         <span class="price-inputs">
           <label class="price-input">
             <span>Min</span>
-            <span aria-hidden="true">₹</span>
+            <span aria-hidden="true">$</span>
             <input
               type="number"
               min="0"
               [max]="priceCeiling()"
               step="500"
               placeholder="Any"
-              aria-label="Minimum price in Indian rupees"
+              aria-label="Minimum price in US dollars"
               [ngModel]="minimumPrice() ?? ''"
               (ngModelChange)="setMinimumPrice($event)"
             />
@@ -66,22 +66,22 @@
           <span class="price-separator" aria-hidden="true">—</span>
           <label class="price-input">
             <span>Max</span>
-            <span aria-hidden="true">₹</span>
+            <span aria-hidden="true">$</span>
             <input
               type="number"
               [min]="minimumPrice() ?? 0"
               [max]="priceCeiling()"
               step="500"
               placeholder="Any"
-              aria-label="Maximum price in Indian rupees"
+              aria-label="Maximum price in US dollars"
               [ngModel]="maximumPrice() ?? ''"
               (ngModelChange)="setMaximumPrice($event)"
             />
           </label>
         </span>
         <span class="price-boundaries">
-          <span>From {{ priceFloor() | currency:'INR':'symbol':'1.0-0':'en-IN' }}</span>
-          <span>To {{ priceCeiling() | currency:'INR':'symbol':'1.0-0':'en-IN' }}</span>
+          <span>From {{ priceFloor() | currency:'USD':'symbol':'1.0-0':'en-US' }}</span>
+          <span>To {{ priceCeiling() | currency:'USD':'symbol':'1.0-0':'en-US' }}</span>
         </span>
       </label>
 
@@ -111,7 +111,7 @@
         {{ filteredProducts().length === 1 ? 'timepiece' : 'timepieces' }} to discover
       }
     </p>
-    <span class="results-note"><i class="bi bi-check2-circle" aria-hidden="true"></i> Prices shown in INR</span>
+    <span class="results-note"><i class="bi bi-check2-circle" aria-hidden="true"></i> Prices shown in USD</span>
   </div>
 
   @if (loading()) {
