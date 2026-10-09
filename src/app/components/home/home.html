@@ -1,93 +1,209 @@
-<!-- HERO BANNER CAROUSEL -->
-<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+<main class="home-storefront">
+  <section class="campaign-carousel" aria-label="Featured watch campaigns" aria-roledescription="carousel">
+    @for (slide of campaignSlides; track slide.id; let index = $index) {
+      <article
+        class="campaign-slide"
+        [class.is-active]="activeSlideIndex() === index"
+        [attr.aria-hidden]="activeSlideIndex() !== index"
+        [attr.aria-label]="(index + 1) + ' of ' + campaignSlides.length"
+        [style.z-index]="activeSlideIndex() === index ? 1 : 0"
+      >
+        <img class="campaign-image" [src]="slide.image" [alt]="slide.imageAlt" [loading]="index === 0 ? 'eager' : 'lazy'">
+        <div class="campaign-shade"></div>
+        <div class="campaign-copy">
+          <span class="campaign-eyebrow"><i aria-hidden="true"></i>{{ slide.eyebrow }}</span>
+          <h1>{{ slide.title }}</h1>
+          <p>{{ slide.description }}</p>
+          <a
+            [routerLink]="slide.route"
+            [queryParams]="slide.queryParams"
+            [fragment]="slide.fragment"
+            class="campaign-cta"
+          >{{ slide.cta }} <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    }
+
+    <div class="campaign-controls">
+      <button type="button" class="campaign-arrow" aria-label="Previous campaign" (click)="showSlide(activeSlideIndex() - 1)">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      </button>
+      <div class="campaign-pagination" role="group" aria-label="Choose campaign">
+        @for (slide of campaignSlides; track slide.id; let index = $index) {
+          <button
+            type="button"
+            class="campaign-dot"
+            [class.is-active]="activeSlideIndex() === index"
+            [attr.aria-label]="'Show ' + slide.eyebrow.toLowerCase() + ' campaign'"
+            [attr.aria-pressed]="activeSlideIndex() === index"
+            (click)="showSlide(index)"
+          ></button>
+        }
+      </div>
+      <button type="button" class="campaign-arrow" aria-label="Next campaign" (click)="showSlide(activeSlideIndex() + 1)">
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      </button>
+      <button
+        type="button"
+        class="campaign-pause"
+        [attr.aria-label]="slideshowPaused() ? 'Play slideshow' : 'Pause slideshow'"
+        [attr.aria-pressed]="slideshowPaused()"
+        (click)="toggleSlideshow()"
+      >
+        <i class="bi" [class.bi-play-fill]="slideshowPaused()" [class.bi-pause-fill]="!slideshowPaused()" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="service-strip" aria-label="Our service">
+    <div><i class="bi bi-truck" aria-hidden="true"></i><span>Complimentary delivery</span></div>
+    <div><i class="bi bi-shield-check" aria-hidden="true"></i><span>Two-year warranty</span></div>
+    <div><i class="bi bi-arrow-return-left" aria-hidden="true"></i><span>Easy 30-day returns</span></div>
+    <div><i class="bi bi-headset" aria-hidden="true"></i><span>Here when you need us</span></div>
+  </section>
+
+  <div id="featured-products" class="storefront-heading">
+    <div>
+      <span class="section-eyebrow">THE FLUX TIME EDIT</span>
+      <h2>Timepieces to treasure.</h2>
+    </div>
+    <a routerLink="/product-list" class="collection-link">Explore all watches <span aria-hidden="true">→</span></a>
   </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" [style.background]="banner.bg">
-      <div class="banner-content">
-        <h1>{{ banner.title }}</h1>
-        <p>{{ banner.subtitle }}</p>
-        <a routerLink="/products" class="btn btn-light btn-lg">{{ banner.cta }}</a>
+
+  @if (loading()) {
+    <section class="showcase-row" aria-label="Loading featured watches">
+      <div class="editorial-tile premium-tile tile-skeleton"></div>
+      @for (item of [1, 2, 3]; track item) {
+        <div class="product-skeleton"></div>
+      }
+    </section>
+  } @else {
+    @if (featuredProducts().length > 0) {
+      <section class="showcase-row" aria-label="Featured watch collection">
+        <a routerLink="/product-list" class="editorial-tile premium-tile">
+          <span class="tile-eyebrow">LUXURY &amp; PREMIUM</span>
+          <span class="tile-title">A collection worth keeping.</span>
+          <span class="tile-link">Explore the collection <span aria-hidden="true">↗</span></span>
+        </a>
+        <div class="showcase-products">
+          @for (product of featuredProducts(); track product.id) {
+            <app-product-card [product]="product"></app-product-card>
+          }
+        </div>
+      </section>
+    }
+
+    @if (moreProducts().length > 0) {
+      <section class="showcase-row showcase-row-reverse" aria-label="More watches from the collection">
+        <div class="showcase-products">
+          @for (product of moreProducts(); track product.id) {
+            <app-product-card [product]="product"></app-product-card>
+          }
+        </div>
+        <a routerLink="/product-list" class="editorial-tile best-tile">
+          <span class="tile-eyebrow">THE FLUX TIME EDIT</span>
+          <span class="tile-title">Make every second count.</span>
+          <span class="tile-link">Discover your next watch <span aria-hidden="true">↗</span></span>
+        </a>
+      </section>
+    }
+
+    @if (products().length === 0) {
+      <div class="empty-collection">
+        <i class="bi bi-watch" aria-hidden="true"></i>
+        <h2>Your next favourite is waiting.</h2>
+        <p>Browse the collection to find a timepiece that feels like you.</p>
+        <a routerLink="/product-list" class="empty-collection-link">Browse watches</a>
+      </div>
+    }
+  }
+
+  <div class="storefront-heading collection-heading">
+    <div>
+      <span class="section-eyebrow">A STYLE FOR EVERY MOMENT</span>
+      <h2>Explore the collections.</h2>
+    </div>
+    <a routerLink="/product-list" class="collection-link">See all watches <span aria-hidden="true">→</span></a>
+  </div>
+
+  <section id="collections" class="collection-showcase" aria-label="Featured collections">
+    <div class="collection-card tall-card">
+      <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80" alt="Luxury watches" />
+      <div class="collection-overlay">
+        <span>Luxury Watches</span>
+        <p>Distinctive silhouettes, timeless appeal.</p>
+        <a routerLink="/product-list">Explore Collection</a>
       </div>
     </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
 
-<!-- CATEGORY STRIP -->
-<div class="container py-4">
-  <div class="category-strip">
-    <div class="category-card" *ngFor="let cat of categories" routerLink="/products">
-      <i class="bi" [ngClass]="cat.icon"></i>
-      <span>{{ cat.name }}</span>
-    </div>
-  </div>
-</div>
-
-<!-- TRUST BADGES -->
-<div class="trust-strip">
-  <div class="container">
-    <div class="row text-center">
-      <div class="col-6 col-md-3">
-        <i class="bi bi-truck"></i>
-        <p>Free Shipping</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-shield-check"></i>
-        <p>2-Year Warranty</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-arrow-return-left"></i>
-        <p>Easy Returns</p>
-      </div>
-      <div class="col-6 col-md-3">
-        <i class="bi bi-headset"></i>
-        <p>24/7 Support</p>
+    <div class="collection-card">
+      <img src="https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80" alt="Automatic watches" />
+      <div class="collection-overlay">
+        <span>Automatic Watches</span>
+        <p>Precision-driven classics in motion.</p>
+        <a routerLink="/product-list">Explore Collection</a>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- LOADING -->
-<div class="container py-5" *ngIf="loading()">
-  <div class="row g-4">
-    <div class="col-6 col-md-3" *ngFor="let s of [1,2,3,4]">
-      <div class="skeleton-card"></div>
+    <div class="collection-card">
+      <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=80" alt="Men's watches" />
+      <div class="collection-overlay">
+        <span>Men's Watches</span>
+        <p>Bold, streamlined pieces for daily wear.</p>
+        <a routerLink="/product-list">Explore Collection</a>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- TODAY'S DEALS -->
-<div class="container py-4" *ngIf="!loading() && dealProducts().length > 0">
-  <div class="section-header">
-    <h3><i class="bi bi-lightning-charge-fill text-warning"></i> Today's Deals</h3>
-    <a routerLink="/products" class="see-all">See all &rarr;</a>
-  </div>
-  <div class="row g-4" [@staggerFadeIn]="dealProducts().length">
-    <div class="col-6 col-md-3" *ngFor="let product of dealProducts()">
-      <app-product-card [product]="product"></app-product-card>
+    <div class="collection-card">
+      <img src="https://images.unsplash.com/photo-1490367532201-b9bc1dc483f6?auto=format&fit=crop&w=900&q=80" alt="Women's watches" />
+      <div class="collection-overlay">
+        <span>Women's Watches</span>
+        <p>Elegant craftsmanship with delicate detail.</p>
+        <a routerLink="/product-list">Explore Collection</a>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- FEATURED PRODUCTS -->
-<div class="container py-4" *ngIf="!loading()">
-  <div class="section-header">
-    <h3>Featured Watches</h3>
-    <a routerLink="/products" class="see-all">See all &rarr;</a>
-  </div>
-  <div class="row g-4" [@staggerFadeIn]="products().length">
-    <div class="col-6 col-md-3" *ngFor="let product of products()">
-      <app-product-card [product]="product"></app-product-card>
+  @if (categories().length > 0) {
+    <section class="category-section" aria-labelledby="category-title">
+      <div class="category-heading">
+        <div>
+          <span class="section-eyebrow">FIND YOUR STYLE</span>
+          <h2 id="category-title">Shop by category</h2>
+        </div>
+        <a routerLink="/product-list" class="collection-link">View all <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="category-strip">
+        @for (cat of categories(); track cat.id) {
+          <a class="category-card" [routerLink]="['/product-list']" [queryParams]="{ category: cat.id }">
+            <span class="category-icon"><i class="bi" [class]="cat.icon" aria-hidden="true"></i></span>
+            <span>{{ cat.name }}</span>
+            <i class="bi bi-arrow-up-right category-arrow" aria-hidden="true"></i>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <section id="about" class="about-section" aria-labelledby="about-title">
+    <div class="about-copy">
+      <span class="section-eyebrow">OUR POINT OF VIEW</span>
+      <h2 id="about-title">A considered approach to time.</h2>
+      <p>
+        A great watch is more than a way to keep time. It is a personal piece of design,
+        chosen for its character, made to be worn, and kept for the moments that matter.
+      </p>
+      <p>
+        Explore a thoughtfully curated selection and find the details, proportions, and
+        finishing that feel unmistakably yours.
+      </p>
+      <a routerLink="/product-list" class="about-link">Discover the collection <span aria-hidden="true">→</span></a>
     </div>
-  </div>
-  <p *ngIf="products().length === 0" class="text-muted">No products found.</p>
-</div>
+    <div class="about-values" aria-label="Our commitments">
+      <div><i class="bi bi-gem" aria-hidden="true"></i><strong>Considered selection</strong><span>Distinctive designs chosen with care.</span></div>
+      <div><i class="bi bi-shield-check" aria-hidden="true"></i><strong>Personal service</strong><span>Support before and after your purchase.</span></div>
+      <div><i class="bi bi-box-seam" aria-hidden="true"></i><strong>Made for keeping</strong><span>Timepieces to enjoy for years to come.</span></div>
+    </div>
+  </section>
+
+</main>

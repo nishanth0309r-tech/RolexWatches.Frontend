@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient ,HttpParams} from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CreateProduct, Product, UpdateProduct } from '../models/product';
+
+export interface PagedResult<T> {
+  items: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private readonly publicUrl = `${environment.apiUrl}/Products`;
   private readonly adminUrl = `${environment.apiUrl}/admin/products`;
 
-  // private readonly mockProducts: Product[] = [
-  //   { id: 1, name: 'Rolex Submariner', images: [{ id: 1, imageUrl: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 8500, discountPrice: 7900 },
-  //   { id: 2, name: 'Omega Seamaster', images: [{ id: 2, imageUrl: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 5200 },
-  //   { id: 3, name: 'Rolex Daytona', images: [{ id: 3, imageUrl: 'https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 12000, discountPrice: 11200 },
-  //   { id: 4, name: 'Tag Heuer Carrera', images: [{ id: 4, imageUrl: 'https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 3400 },
-  //   { id: 5, name: 'Rolex GMT-Master II', images: [{ id: 5, imageUrl: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 9800 },
-  //   { id: 6, name: 'Patek Philippe Nautilus', images: [{ id: 6, imageUrl: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 28000 },
-  //   { id: 7, name: 'Rolex Datejust', images: [{ id: 7, imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 7200, discountPrice: 6800 },
-  //   { id: 8, name: 'Audemars Piguet Royal Oak', images: [{ id: 8, imageUrl: 'https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=500&q=80', isPrimary: true, displayOrder: 1 }], price: 22000 },
-  // ];
+ 
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +24,7 @@ export class ProductService {
     return this.http.get<Product[]>(this.publicUrl).pipe(
       catchError(() => {
         console.warn('Product API unreachable — showing demo data instead.');
-        return of();
+        return of([]);
       })
     );
   }
@@ -36,12 +34,16 @@ export class ProductService {
       catchError(() => {
         console.warn(`Product API unreachable — showing demo data for product ID ${id} instead.`);
         return of();
-  })
-      // catchError(() => {
-      //   const found = this.mockProducts.find(p => p.id === id);
-      //   return of(found ?? this.mockProducts[0]);
-      // })
+      })
+      
     );
+  }
+
+  search(filter: { categoryId?: number | null; brandId?: number | null }): Observable<PagedResult<Product>> {
+    let params = new HttpParams().set('pageSize', 100);
+      if (filter.categoryId) params = params.set('categoryId', filter.categoryId);
+      if (filter.brandId) params = params.set('brandId', filter.brandId);
+    return this.http.get<PagedResult<Product>>(`${this.publicUrl}/search`, { params });
   }
 
   create(product: CreateProduct): Observable<Product> {

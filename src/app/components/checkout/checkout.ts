@@ -1,11 +1,12 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order-service';
 import { CartItem } from '../../models/cart.model';
+import { map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-checkout',
@@ -19,7 +20,8 @@ export class Checkout implements OnInit {
   private orderService = inject(OrderService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-
+  singleItem = signal(false);
+  private route = inject(ActivatedRoute);
   items = signal<CartItem[]>([]);
   loading = signal(true);
   submitting = signal(false);
@@ -30,8 +32,17 @@ export class Checkout implements OnInit {
   });
 
   ngOnInit(): void {
-    this.cartService.getCart().subscribe(items => {
-      this.items.set(items);
+  this.route.queryParamMap.pipe(
+    switchMap(params => {
+      const itemId = Number(params.get('item'));
+      return this.cartService.getCart().pipe(
+        map(items => ({ items, itemId }))
+      );
+    })
+  ).subscribe(({ items, itemId }) => {
+      const selected = itemId ? items.filter(i => i.id === itemId) : items;
+      this.items.set(selected);
+      this.singleItem.set(!!itemId);
       this.loading.set(false);
     });
   }

@@ -1,0 +1,48 @@
+<section class="reviews">
+  <h3>Customer reviews</h3>
+
+  @if (data(); as d) {
+    <div class="summary">
+      <span class="avg">{{ d.averageRating }}</span>
+      <span class="stars">{{ stars(d.averageRating) }}</span>
+      <span class="count">({{ d.reviewCount }} {{ d.reviewCount === 1 ? 'review' : 'reviews' }})</span>
+    </div>
+
+    @for (r of d.reviews; track r.id) {
+      <article class="review">
+        <div class="head">
+          <strong>{{ r.userName }}</strong>
+          <span class="stars">{{ stars(r.rating) }}</span>
+          <small>{{ r.createdAt | date: 'mediumDate' }}</small>
+        </div>
+        <p>{{ r.comment }}</p>
+      </article>
+    } @empty {
+      <p class="muted">No reviews yet. Be the first to review this watch.</p>
+    }
+  }
+
+  <div class="write">
+    @if (loggedIn) {
+      <h4>Write a review</h4>
+      <div class="pick" role="radiogroup" aria-label="Rating">
+        @for (s of starValues; track s) {
+          <button type="button" class="star" [class.on]="s <= rating()" (click)="rating.set(s)"
+                  [attr.aria-label]="s + ' stars'">★</button>
+        }
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <textarea rows="3" formControlName="comment" placeholder="Share your experience with this watch…"></textarea>
+        @if (form.controls.comment.touched && form.controls.comment.invalid) {
+          <small class="error">Please write a short comment (max 1000 characters).</small>
+        }
+        <button type="submit" class="btn primary" [disabled]="submitting()">
+          {{ submitting() ? 'Submitting…' : 'Submit review' }}
+        </button>
+      </form>
+    } @else {
+      <p class="muted">Please log in to write a review.</p>
+    }
+  </div>
+</section>

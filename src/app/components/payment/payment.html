@@ -1,30 +1,103 @@
-<section class="page">
-  <h1>Payment</h1>
+<main class="payment-page">
+  <header class="payment-heading">
+    <span class="eyebrow">FLUX TIME · SECURE CHECKOUT</span>
+    <h1>Complete your order</h1>
+    <p>Choose how you’d like to pay for your timepiece.</p>
+    <div class="checkout-steps" aria-label="Checkout progress">
+      <span class="step complete"><span>1</span> Delivery</span>
+      <span class="step-divider" aria-hidden="true"></span>
+      <span class="step active"><span>2</span> Payment</span>
+    </div>
+  </header>
 
   @if (order(); as o) {
-    <p>Order #{{ o.id }} · Total: <strong>{{ o.totalAmount | currency }}</strong></p>
+    <div class="payment-layout">
+      <section class="payment-card">
+        <div class="section-heading">
+          <div>
+            <span class="section-index">01</span>
+            <h2>Payment method</h2>
+          </div>
+          <span class="secure-note"><i class="bi bi-shield-lock" aria-hidden="true"></i> Secure checkout</span>
+        </div>
 
-    <form [formGroup]="form" (ngSubmit)="pay()">
-      <label>
-        Method
-        <select formControlName="method">
-          <option value="Card">Card</option>
-        </select>
-      </label>
+        <form [formGroup]="form" (ngSubmit)="pay()">
+          <div class="payment-methods" role="radiogroup" aria-label="Choose a payment method">
+            <label class="method-option" [class.selected]="form.controls.method.value === 'Card'">
+              <input type="radio" formControlName="method" value="Card">
+              <span class="method-icon"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>Credit / Debit card</strong><small>Visa, Mastercard and more</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
 
-      <label>
-        Card number (test: any 16 digits, ending 0000 fails)
-        <input formControlName="cardNumber" maxlength="16" inputmode="numeric" />
-      </label>
-      @if (form.controls.cardNumber.touched && form.controls.cardNumber.invalid) {
-        <small class="error">Enter a 16-digit card number.</small>
-      }
+            <label class="method-option" [class.selected]="form.controls.method.value === 'UPI'">
+              <input type="radio" formControlName="method" value="UPI">
+              <span class="method-icon"><i class="bi bi-phone" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>UPI</strong><small>Pay using your UPI app</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
 
-      <button type="submit" class="btn primary" [disabled]="paying()">
-        {{ paying() ? 'Processing…' : 'Pay now' }}
-      </button>
-    </form>
+            <label class="method-option" [class.selected]="form.controls.method.value === 'NetBanking'">
+              <input type="radio" formControlName="method" value="NetBanking">
+              <span class="method-icon"><i class="bi bi-bank" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>Net banking</strong><small>Pay directly from your bank</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
+
+            <label class="method-option" [class.selected]="form.controls.method.value === 'CashOnDelivery'">
+              <input type="radio" formControlName="method" value="CashOnDelivery">
+              <span class="method-icon"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>Cash on delivery</strong><small>Pay when your order arrives</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
+          </div>
+
+          @if (form.controls.method.value === 'Card') {
+            <label class="card-number-field" for="card-number">
+              Card number
+              <span class="field-hint">Test payment: any 16 digits; ending in 0000 fails</span>
+              <input
+                id="card-number"
+                formControlName="cardNumber"
+                maxlength="16"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                placeholder="0000 0000 0000 0000"
+              >
+            </label>
+            @if (form.controls.cardNumber.touched && form.controls.cardNumber.invalid) {
+              <small class="error">Enter a valid 16-digit card number.</small>
+            }
+          } @else if (form.controls.method.value === 'UPI') {
+            <p class="method-message"><i class="bi bi-info-circle" aria-hidden="true"></i> You’ll be guided to complete payment with your UPI app.</p>
+          } @else if (form.controls.method.value === 'NetBanking') {
+            <p class="method-message"><i class="bi bi-info-circle" aria-hidden="true"></i> Continue to securely complete payment through your bank.</p>
+          } @else {
+            <p class="method-message"><i class="bi bi-info-circle" aria-hidden="true"></i> Pay in cash when your watch is delivered to your address.</p>
+          }
+
+          <button type="submit" class="pay-button" [disabled]="paying()">
+            <span>{{ paying() ? 'Processing…' : form.controls.method.value === 'CashOnDelivery' ? 'Confirm order' : 'Continue to payment' }}</span>
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+      </section>
+
+      <aside class="order-card" aria-label="Order summary">
+        <span class="section-index">ORDER SUMMARY</span>
+        <h2>Your timepiece</h2>
+        <div class="order-reference"><span>Order reference</span><strong>#{{ o.id }}</strong></div>
+        <div class="summary-divider"></div>
+        <div class="order-total"><span>Total due</span><strong>{{ o.totalAmount | currency }}</strong></div>
+        <p class="delivery-note"><i class="bi bi-box-seam" aria-hidden="true"></i> Complimentary insured delivery</p>
+        <p class="authenticity-note"><i class="bi bi-patch-check" aria-hidden="true"></i> Every Flux Timepiece is quality checked before dispatch.</p>
+        <div class="payment-assurance"><i class="bi bi-lock-fill" aria-hidden="true"></i> Your payment details are protected</div>
+      </aside>
+    </div>
   } @else {
-    <p>Loading order…</p>
+    <div class="payment-loading" role="status">
+      <span class="loading-mark"><i class="bi bi-watch" aria-hidden="true"></i></span>
+      <p>Preparing your secure checkout…</p>
+    </div>
   }
-</section>
+</main>

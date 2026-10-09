@@ -1,17 +1,67 @@
-<h2>Orders</h2>
-<table>
-  <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
-  <tbody>
-    <tr *ngFor="let o of orders()">
-      <td>{{ o.id }}</td>
-      <td>{{ o.customerName }}</td>
-      <td>{{ o.totalAmount | currency }}</td>
-      <td>
-        <select [(ngModel)]="o.status" (change)="changeStatus(o, o.status)">
-          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
-        </select>
-      </td>
-      <td>{{ o.createdAt | date:'short' }}</td>
-    </tr>
-  </tbody>
-</table>
+<section class="catalog-admin order-admin">
+  <header class="page-head">
+    <div class="page-title">
+      <span class="page-eyebrow">STORE OPERATIONS</span>
+      <h1>Manage orders</h1>
+      <p>Review customer purchases and keep every delivery moving.</p>
+    </div>
+    <div class="page-actions">
+      <span class="record-count">
+        <i class="bi bi-box-seam" aria-hidden="true"></i>
+        {{ orders().length }} {{ orders().length === 1 ? 'order' : 'orders' }}
+      </span>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="catalog-loading" role="status">
+      <span class="loading-indicator"></span>Loading orders…
+    </div>
+  } @else if (loadFailed()) {
+    <div class="order-message" role="alert">
+      <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+      <strong>Orders are unavailable right now</strong>
+      <span>Try again in a moment.</span>
+      <button type="button" (click)="load()">Retry</button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div><i class="bi bi-receipt-cutoff" aria-hidden="true"></i><span>Order register</span></div>
+        <span>{{ orders().length }} {{ orders().length === 1 ? 'record' : 'records' }}</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th><th>Customer</th><th class="numeric-cell">Total</th><th>Status</th><th>Date placed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let o of orders()">
+            <td><span class="order-number">#{{ o.id }}</span></td>
+            <td><span class="order-customer">{{ o.customerName }}</span></td>
+            <td class="numeric-cell"><span class="order-total">{{ o.totalAmount | currency }}</span></td>
+            <td>
+              <select
+                class="order-status-select"
+                [(ngModel)]="o.status"
+                (change)="changeStatus(o, o.status)"
+                [attr.aria-label]="'Update status for order #' + o.id"
+              >
+                <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+              </select>
+            </td>
+            <td><span class="order-date">{{ o.createdAt | date:'mediumDate' }}</span></td>
+          </tr>
+          <tr *ngIf="orders().length === 0">
+            <td colspan="5" class="empty-state">
+              <i class="bi bi-inbox" aria-hidden="true"></i>
+              <strong>No orders yet</strong>
+              <span>New customer purchases will appear here.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

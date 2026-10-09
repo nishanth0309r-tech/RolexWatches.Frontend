@@ -1,0 +1,44 @@
+<main class="profile-page">
+  @if (auth.currentUser(); as user) {
+    <header class="profile-heading">
+      <span class="profile-eyebrow">YOUR FLUX TIME ACCOUNT</span>
+      <h1>Welcome, {{ user.fullName }}.</h1>
+      <p>Your details and shortcuts to the things you care about.</p>
+    </header>
+
+    <section class="profile-layout" aria-label="Your account">
+      <article class="profile-card">
+        <div class="profile-card-heading">
+          <span class="profile-avatar" aria-hidden="true">{{ user.fullName.charAt(0).toUpperCase() }}</span>
+          <div>
+            <span class="profile-eyebrow">ACCOUNT DETAILS</span>
+            <h2>Personal information</h2>
+          </div>
+        </div>
+        <dl class="profile-details">
+          <div><dt>Full name</dt><dd>{{ user.fullName }}</dd></div>
+          <div><dt>Email address</dt><dd>{{ user.email }}</dd></div>
+          <div><dt>Phone number</dt><dd>{{ user.phoneNumber || 'Not provided' }}</dd></div>
+        </dl>
+      </article>
+
+      <nav class="profile-shortcuts" aria-label="Account shortcuts">
+        <a routerLink="/orders">
+          <span class="shortcut-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+          <span><strong>My orders</strong><small>Track purchases and view order history</small></span>
+          <i class="bi bi-arrow-up-right shortcut-arrow" aria-hidden="true"></i>
+        </a>
+        <a routerLink="/wishlist">
+          <span class="shortcut-icon"><i class="bi bi-heart" aria-hidden="true"></i></span>
+          <span><strong>My wishlist</strong><small>Return to watches you have saved</small></span>
+          <i class="bi bi-arrow-up-right shortcut-arrow" aria-hidden="true"></i>
+        </a>
+        <a routerLink="/contact">
+          <span class="shortcut-icon"><i class="bi bi-chat-dots" aria-hidden="true"></i></span>
+          <span><strong>Contact concierge</strong><small>We are here to help with your account</small></span>
+          <i class="bi bi-arrow-up-right shortcut-arrow" aria-hidden="true"></i>
+        </a>
+      </nav>
+    </section>
+  }
+</main>

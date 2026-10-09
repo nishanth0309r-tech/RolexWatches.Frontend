@@ -1,8 +1,48 @@
-<h2>Reviews</h2>
-<div *ngFor="let r of reviews()" class="review-card">
-  <p><strong>{{ r.productName }}</strong> — {{ r.rating }}★</p>
-  <p><strong>{{ r.productName }}</strong> &nbsp;<span style="color: var(--gold-500);">{{ '★'.repeat(r.rating) }}</span></p>
-  <p>{{ r.comment }}</p>
-  <small>by {{ r.customerName }} on {{ r.createdAt | date:'short' }}</small>
-  <button (click)="deleteReview(r.id)">Remove</button>
-</div>
+<section class="page">
+  <div class="page-head">
+    <h1>Reviews</h1>
+    <span class="stat">{{ reviews().length }} reviews · average {{ average() }} ★</span>
+  </div>
+
+  <div class="filters">
+    <input type="text" placeholder="Search product, customer or comment…"
+           [ngModel]="search()" (ngModelChange)="search.set($event)" />
+    <select [ngModel]="ratingFilter()" (ngModelChange)="ratingFilter.set(+$event)">
+      <option [ngValue]="0">All ratings</option>
+      <option [ngValue]="5">5 stars</option>
+      <option [ngValue]="4">4 stars</option>
+      <option [ngValue]="3">3 stars</option>
+      <option [ngValue]="2">2 stars</option>
+      <option [ngValue]="1">1 star</option>
+    </select>
+  </div>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Id</th><th>Product</th><th>Customer</th><th>Rating</th><th>Comment</th><th>Date</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          @for (r of filtered(); track r.id) {
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.productName }}</td>
+              <td>{{ r.userName }}</td>
+              <td class="rating">{{ stars(r.rating) }}</td>
+              <td class="desc">{{ r.comment }}</td>
+              <td>{{ r.createdAt | date: 'mediumDate' }}</td>
+              <td class="actions">
+                <button type="button" class="btn-del" (click)="deleteReview(r)">Delete</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="muted">No reviews found.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

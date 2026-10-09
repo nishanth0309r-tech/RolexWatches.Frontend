@@ -18,11 +18,22 @@ export class DashboardComponent implements OnInit {
   // loading = true;
   summary = signal<DashboardSummary | undefined>(undefined);
   loading = signal(true);
+  loadFailed = signal(false);
 
   ngOnInit(): void {
+    this.loadSummary();
+  }
+
+  loadSummary(): void {
+    this.loading.set(true);
+    this.loadFailed.set(false);
     this.dashboardService.getSummary().subscribe({
       next: (data) => { this.summary.set(data); this.loading.set(false); },
-      error: () => { this.toastr.error('Failed to load dashboard'); this.loading.set(false); }
+      error: () => {
+        this.loadFailed.set(true);
+        this.loading.set(false);
+        this.toastr.error('Failed to load dashboard');
+      }
     });
   }
 }

@@ -12,9 +12,13 @@
     <div class="rows">
       @for (item of items(); track item.id) {
         <div class="row">
-          <img [src]="item.imageUrl" [alt]="item.productName" />
+          <a [routerLink]="['/product-details', item.productId]">
+            <img [src]="item.imageUrl" [alt]="item.productName" />
+          </a>
           <div class="info">
-            <h3>{{ item.productName }}</h3>
+            <h3>
+              <a [routerLink]="['/product-details', item.productId]">{{ item.productName }}</a>
+            </h3>
             <p>{{ item.price | currency }}</p>
           </div>
           <div class="qty">
@@ -23,6 +27,7 @@
             <button type="button" (click)="updateQuantity(item, item.quantity + 1)">+</button>
           </div>
           <strong class="line">{{ item.price * item.quantity | currency }}</strong>
+          <button type="button" class="btn buy" (click)="buyNow(item)">Buy this item</button>
           <button type="button" class="link-danger" (click)="remove(item)">Remove</button>
         </div>
       }
@@ -31,14 +36,9 @@
     <div class="summary">
       <span>Total</span>
       <strong>{{ total() | currency }}</strong>
-      <a routerLink="/checkout" class="btn primary">Proceed to checkout</a>
+      <a routerLink="/checkout" class="btn primary">Order all items</a>
     </div>
 
-    <!-- <div class="summary">
-      <span>Total</span>
-      <strong>{{ total() | currency }}</strong>
-      <button type="button" class="btn primary" (click)="placeOrder()" [disabled]="placing()">
-      {{ placing() ? 'Placing order…' : 'Place Order' }}
-    </button> -->
+    
   }
 </section>

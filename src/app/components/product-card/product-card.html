@@ -1,28 +1,58 @@
-<div class="card h-100 shadow-sm tilt-card" [style]="tiltStyle()" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
-  <a [routerLink]="['/product', product().id]">
-    <img
-      [src]="imageUrl()"
-      class="card-img-top"
-      [alt]="product().name"
-      style="height: 200px; object-fit: cover;"
-      (error)="onImageError($event)"
-    >
-  </a>
-  <div class="card-body d-flex flex-column">
-    <h6 class="card-title">{{ product().name }}</h6>
-    <p class="card-text fw-bold">
-      @if (product().discountPrice) {
-        <span class="text-danger">${{ product().discountPrice }}</span>
+<article class="watch-card">
+  <div class="watch-gallery">
+    <a class="watch-image-link" [routerLink]="['/product-details', product().id]" [attr.aria-label]="'View ' + product().name">
+      <div class="watch-image">
+        <img
+          [src]="imageUrl()"
+          [alt]="product().name"
+          loading="lazy"
+          (error)="onImageError($event)"
+        >
+        @if (product().discountPrice) {
+          <span class="watch-badge">Special price</span>
+        }
+      </div>
+    </a>
+    @if (galleryImages().length > 1) {
+      <div class="watch-thumbnails" role="group" [attr.aria-label]="product().name + ' images'">
+        @for (image of galleryImages(); track image.id; let index = $index) {
+          <button
+            type="button"
+            class="watch-thumbnail"
+            [class.is-selected]="selectedImageIndex() === index"
+            [attr.aria-label]="'Show ' + product().name + ' image ' + (index + 1)"
+            [attr.aria-pressed]="selectedImageIndex() === index"
+            (click)="selectImage(index)"
+          >
+            <img [src]="image.imageUrl" [alt]="product().name + ' view ' + (index + 1)" (error)="onImageError($event)">
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div class="watch-info">
+    <a class="watch-details" [routerLink]="['/product-details', product().id]">
+      <span class="watch-brand">{{ product().brandName || 'Flux Time selection' }}</span>
+      <span class="watch-name">{{ product().name }}</span>
+      @if (product().categoryName) {
+        <span class="watch-category">{{ product().categoryName }}</span>
       }
-      <span [class.text-decoration-line-through]="product().discountPrice" [class.text-muted]="product().discountPrice">
-        ${{ product().price }}
+      <span class="watch-price">
+        @if (product().discountPrice) {
+          <span class="sale-price">{{ product().discountPrice | currency:'USD':'symbol':'1.0-2':'en-US' }}</span>
+        }
+        <span [class.original-price]="product().discountPrice">
+          {{ product().price | currency:'USD':'symbol':'1.0-2':'en-US' }}
+        </span>
       </span>
-    </p>
-    <div class="mt-auto d-flex gap-2">
-      <button class="btn btn-primary btn-sm flex-grow-1 btn-pulse" (click)="addToCart()">Add to Cart</button>
-      <button class="btn btn-outline-danger btn-sm" (click)="addToWishlist()">
-        <i class="bi bi-heart"></i>
+    </a>
+    <div class="watch-actions">
+      <button class="watch-add" type="button" (click)="addToCart()">
+        <i class="bi bi-bag" aria-hidden="true"></i><span>Add to cart</span>
+      </button>
+      <button class="watch-wishlist" type="button" (click)="addToWishlist()" [attr.aria-label]="'Add ' + product().name + ' to wishlist'">
+        <i class="bi bi-heart" aria-hidden="true"></i>
       </button>
     </div>
   </div>
-</div>
+</article>

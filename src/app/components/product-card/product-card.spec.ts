@@ -1,21 +1,66 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { registerLocaleData } from '@angular/common';
+import localeEn from '@angular/common/locales/en';
+import { provideRouter } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { of } from 'rxjs';
+import { AuthService } from '../../services/auth-service';
+import { CartService } from '../../services/cart';
+import { WishlistService } from '../../services/wishlist';
+import { Product } from '../../models/product';
 import { ProductCard } from './product-card';
 
+registerLocaleData(localeEn);
+
 describe('ProductCard', () => {
-  let component: ProductCard;
-  let fixture: ComponentFixture<ProductCard>;
+  const product: Product = {
+    id: 1,
+    name: 'Heritage Automatic',
+    price: 1200,
+    images: [
+      { id: 1, imageUrl: '/watch-side.jpg', isPrimary: false, displayOrder: 1 },
+      { id: 2, imageUrl: '/watch-front.jpg', isPrimary: true, displayOrder: 0 }
+    ]
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProductCard],
+      providers: [
+        provideRouter([]),
+        { provide: CartService, useValue: { addToCart: () => of(null) } },
+        { provide: WishlistService, useValue: { addToWishlist: () => of(null) } },
+        { provide: AuthService, useValue: { isLoggedIn: () => false } },
+        { provide: ToastrService, useValue: {} }
+      ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(ProductCard);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create and use the primary product image', () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', product);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance).toBeTruthy();
+    expect(fixture.componentInstance.imageUrl()).toBe('/watch-front.jpg');
+  });
+
+  it('should switch images from the product thumbnail gallery', () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', product);
+    fixture.detectChanges();
+
+    fixture.componentInstance.selectImage(1);
+
+    expect(fixture.componentInstance.imageUrl()).toBe('/watch-side.jpg');
+    expect(fixture.nativeElement.querySelectorAll('.watch-thumbnail')).toHaveLength(2);
+  });
+
+  it('formats product prices with US dollars and digit grouping', () => {
+    const fixture = TestBed.createComponent(ProductCard);
+    fixture.componentRef.setInput('product', { ...product, price: 120000 });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('$120,000');
   });
 });

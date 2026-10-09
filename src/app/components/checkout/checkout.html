@@ -11,6 +11,13 @@
   } @else {
     <div class="checkout-grid">
       <form [formGroup]="form" (ngSubmit)="placeOrder()">
+        @if (singleItem()) {
+          <p class="note">
+            Ordering the selected item only.
+            <a routerLink="/checkout">Order all items instead</a>
+          </p>
+        }
+
         <label for="address">Shipping address</label>
         <textarea id="address" rows="4" formControlName="shippingAddress"></textarea>
         @if (form.controls.shippingAddress.touched && form.controls.shippingAddress.invalid) {
@@ -22,7 +29,7 @@
       </form>
 
       <aside class="summary-card">
-        <h3>Order summary</h3>
+        <h3>{{ singleItem() ? 'Selected item' : 'Order summary' }}</h3>
         @for (item of items(); track item.id) {
           <div class="sum-row">
             <span>{{ item.productName }} × {{ item.quantity }}</span>

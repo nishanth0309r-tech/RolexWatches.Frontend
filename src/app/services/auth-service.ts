@@ -30,7 +30,7 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/register`, dto).pipe(
       tap(res => {
         this.setSession(res.data);
-        this.toastr.success(res.message ?? 'Registration successful.', 'Welcome to WatchHub');
+        this.toastr.success(res.message ?? 'Registration successful.', 'Welcome to Flux Time');
         this.router.navigate(['/']);
       }),
       catchError(err => this.handleAuthError(err))
@@ -87,8 +87,14 @@ export class AuthService {
   }
  
   private handleAuthError(err: any) {
-    const message = err?.error?.message ?? 'Something went wrong. Please try again.';
-    this.toastr.error(message, 'Error');
-    return throwError(() => err);
+    const message =
+    err.error?.message
+    ?? err.error?.errors?.[0]
+    ?? (err.status === 0
+        ? 'Cannot reach the server. Please try again.'
+        : 'Something went wrong. Please try again.');
+
+  this.toastr.error(message, 'Login failed');
+  return throwError(() => err);
   }
 }

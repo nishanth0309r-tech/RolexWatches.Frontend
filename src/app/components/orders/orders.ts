@@ -18,11 +18,24 @@ export class Orders implements OnInit {
 
   orders = signal<MyOrder[]>([]);
   loading = signal(true);
+  loadFailed = signal(false);
 
   ngOnInit(): void {
+    this.loadOrders();
+  }
+
+  loadOrders(): void {
+    this.loading.set(true);
+    this.loadFailed.set(false);
     this.orderService.getMyOrders().subscribe({
-      next: orders => { this.orders.set(orders); this.loading.set(false); },
-      error: () => this.loading.set(false)
+      next: orders => {
+        this.orders.set(orders);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.loadFailed.set(true);
+      }
     });
   }
 

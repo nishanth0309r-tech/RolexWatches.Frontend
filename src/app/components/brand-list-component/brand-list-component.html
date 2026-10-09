@@ -1,11 +1,108 @@
-<h2>Brands</h2>
-<div class="add-row">
-  <input [ngModel]="newBrandName()" (ngModelChange)="newBrandName.set($event)" placeholder="New brand name" />
-  <button (click)="addBrand()">Add</button>
-</div>
-<ul>
-  <li *ngFor="let b of brands()">
-    {{ b.name }}
-    <button (click)="deleteBrand(b.id)">Delete</button>
-  </li>
-</ul>
+<section class="catalog-admin">
+  <div class="page-head">
+    <div class="page-title">
+      <span class="page-eyebrow">CATALOG MANAGEMENT</span>
+      <h1>Brands</h1>
+      <p>Manage the watchmakers and labels in your collection.</p>
+    </div>
+    <div class="page-actions">
+      <span class="record-count"><i class="bi bi-award" aria-hidden="true"></i>{{ brands().length }} brands</span>
+      <button type="button" class="btn primary add-record" (click)="openAdd()">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i><span>Add brand</span>
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="catalog-loading"><span class="loading-indicator"></span>Loading brands…</div>
+  } @else {
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div><i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Brand directory</span></div>
+        <span>{{ brands().length }} {{ brands().length === 1 ? 'record' : 'records' }}</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Brand</th><th>Description</th><th class="numeric-cell">Products</th><th>Status</th><th class="actions-heading">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of brands(); track b.id) {
+            <tr>
+              <td>
+                <div class="record-identity">
+                  <span class="brand-mark">
+                    @if (b.logoUrl) {
+                      <img [src]="b.logoUrl" [alt]="b.name" class="logo" />
+                    } @else {
+                      <i class="bi bi-watch" aria-hidden="true"></i>
+                    }
+                  </span>
+                  <span class="record-name">
+                    <a [routerLink]="['/product-list']" [queryParams]="{ brand: b.id }" class="name-link">{{ b.name }}</a>
+                    <small>#{{ b.id }}</small>
+                  </span>
+                </div>
+              </td>
+              <td class="desc">{{ b.description || '–' }}</td>
+              <td class="numeric-cell"><span class="product-count">{{ b.productCount }}</span></td>
+              <td>
+                <span class="badge" [class.off]="!b.isActive">{{ b.isActive ? 'Active' : 'Inactive' }}</span>
+              </td>
+              <td class="actions">
+                <button type="button" class="btn-edit" (click)="openEdit(b)" [attr.aria-label]="'Edit ' + b.name">
+                  <i class="bi bi-pencil" aria-hidden="true"></i><span>Edit</span>
+                </button>
+                <button type="button" class="btn-del" (click)="deleteBrand(b)" [disabled]="b.productCount > 0" [attr.aria-label]="'Delete ' + b.name">
+                  <i class="bi bi-trash3" aria-hidden="true"></i><span>Delete</span>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty-state"><i class="bi bi-award" aria-hidden="true"></i><strong>No brands yet</strong><span>Add your first brand to start building the collection.</span></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (modalOpen()) {
+    <div class="backdrop" (click)="closeModal()">
+      <div class="dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <h2>{{ editingId() ? 'Edit brand' : 'Add brand' }}</h2>
+
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <label>
+            Name
+            <input formControlName="name" />
+          </label>
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <small class="error">Name is required.</small>
+          }
+
+          <label>
+            Logo URL
+            <input formControlName="logoUrl" placeholder="https://…" />
+          </label>
+
+          <label>
+            Description
+            <textarea rows="3" formControlName="description"></textarea>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" formControlName="isActive" /> Active
+          </label>
+
+          <div class="dialog-actions">
+            <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn primary" [disabled]="saving()">
+              {{ saving() ? 'Saving…' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

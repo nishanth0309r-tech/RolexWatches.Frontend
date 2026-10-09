@@ -17,9 +17,27 @@ export class OrderListComponent implements OnInit {
   private toastr = inject(ToastrService);
 
   orders = signal<Order[]>([]);
+  loading = signal(true);
+  loadFailed = signal(false);
   statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
-  ngOnInit(): void { this.orderService.getAll().subscribe(data => this.orders.set(data)); }
+  ngOnInit(): void { this.load(); }
+
+  load(): void {
+    this.loading.set(true);
+    this.loadFailed.set(false);
+    this.orderService.getAll().subscribe({
+      next: data => {
+        this.orders.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.loadFailed.set(true);
+        this.toastr.error('Failed to load orders');
+      }
+    });
+  }
 
   changeStatus(order: Order, newStatus: string): void {
     this.orderService.updateStatus(order.id, newStatus).subscribe({

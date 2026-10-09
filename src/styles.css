@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "ngx-toastr/toastr";
 
@@ -7,12 +7,20 @@
   --navy-900: #10182b;
   --gold-500: #c9a24b;
   --gold-600: #b08d3e;
-  --paper: #f7f5f1;
+  --gold-700: #98752a;
+  --paper: #faf9f6;
+  --blush-50: #fff6f8;
+  --blush-100: #ffedf2;
+  --blush-200: #f7dce4;
   --ink-900: #1c2130;
+  --ink-800: #2b3142;
+  --ink-700: #3a4256;
   --ink-600: #5b6376;
   --ink-400: #9aa2b3;
   --line: #e6e2d8;
   --card: #ffffff;
+  --shadow-soft: 0 18px 45px rgba(11, 18, 32, 0.08);
+  --shadow-card: 0 8px 30px rgba(11, 18, 32, 0.06);
   --green-bg: #e7f3ea; --green-fg: #1f6b3f;
   --amber-bg: #fbf0d9; --amber-fg: #92650c;
   --blue-bg: #e6edfa;  --blue-fg: #2a4a8f;
@@ -22,14 +30,484 @@
 
 * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink-900);
-  font-family: 'Inter', -apple-system, Segoe UI, sans-serif;
+html {
+  scroll-behavior: smooth;
 }
 
-h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(201, 162, 75, 0.14), transparent 26%),
+    linear-gradient(180deg, #fdfbf9 0%, var(--paper) 100%);
+  color: var(--ink-900);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+h1, h2, h3, h4 {
+  margin-top: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--ink-900);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+p {
+  margin-top: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+}
+
+button, input, select, textarea { font-family: inherit; }
+
+::selection { background: rgba(201, 162, 75, 0.28); }
+
+:focus-visible {
+  outline: 2px solid var(--gold-600);
+  outline-offset: 3px;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.standard-btn,
+button[type='submit'],
+button:not(.logout-btn):not(.watch-wishlist):not(.watch-add) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid var(--navy-950);
+  border-radius: 999px;
+  background: var(--navy-950);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.standard-btn:hover,
+button[type='submit']:hover,
+button:not(.logout-btn):not(.watch-wishlist):not(.watch-add):hover {
+  transform: translateY(-1px);
+  background: var(--gold-700);
+  box-shadow: 0 8px 20px rgba(152, 117, 42, 0.25);
+}
+
+.standard-btn.secondary,
+button.secondary {
+  background: transparent;
+  color: var(--ink-900);
+}
+
+.standard-btn.secondary:hover,
+button.secondary:hover {
+  background: var(--blush-50);
+}
+
+.form-control,
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid #ddd4c6;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink-800);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(176, 141, 62, 0.72);
+  box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.12);
+  outline: none;
+}
+
+.form-label,
+label {
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  color: var(--ink-800);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-surface {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-card);
+}
+
+.catalog-admin {
+  width: min(calc(100% - 2rem), 1440px);
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 3.5rem) 0 4rem;
+}
+
+.catalog-admin .page-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.75rem;
+}
+
+.catalog-admin .page-title h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.catalog-admin .page-eyebrow {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: var(--gold-600);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.catalog-admin .page-title p {
+  margin: 0.65rem 0 0;
+  color: var(--ink-600);
+  font-size: 0.88rem;
+}
+
+.catalog-admin .page-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.catalog-admin .record-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-600);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.catalog-admin .record-count i { color: var(--gold-600); font-size: 1rem; }
+
+.catalog-admin .btn.primary.add-record {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0 1rem;
+  border: 1px solid var(--navy-950);
+  border-radius: 2px;
+  background: var(--navy-950);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.catalog-admin .btn.primary.add-record:hover {
+  background: #fff;
+  color: var(--navy-950);
+}
+
+.catalog-admin .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(20, 26, 32, 0.035);
+}
+
+.catalog-admin .table-toolbar {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.catalog-admin .table-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--ink-900);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 600;
+}
+
+.catalog-admin .table-toolbar i { color: var(--gold-600); font-family: sans-serif; font-size: 0.9rem; }
+.catalog-admin .table-toolbar > span { color: var(--ink-400); font-size: 0.72rem; }
+
+.catalog-admin table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.catalog-admin th {
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid var(--line);
+  background: #faf9f6;
+  color: var(--ink-600);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.catalog-admin td {
+  padding: 0.9rem 1.15rem;
+  border-bottom: 1px solid #f0eee8;
+  color: var(--ink-600);
+  font-size: 0.81rem;
+  line-height: 1.55;
+  vertical-align: middle;
+}
+
+.catalog-admin tbody tr:last-child td { border-bottom: 0; }
+.catalog-admin tbody tr { transition: background 0.16s ease; }
+.catalog-admin tbody tr:hover { background: #fbfaf7; }
+
+.catalog-admin .record-identity {
+  display: flex;
+  min-width: 170px;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.catalog-admin .brand-mark,
+.catalog-admin .category-mark {
+  display: grid;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: #f7f5f0;
+  color: var(--gold-600);
+}
+
+.catalog-admin .brand-mark i,
+.catalog-admin .category-mark i { font-size: 1.1rem; }
+.catalog-admin .brand-mark img { width: 100%; height: 100%; padding: 0.25rem; object-fit: contain; }
+.catalog-admin .record-name { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.catalog-admin .name-link {
+  color: var(--ink-900);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.catalog-admin .name-link:hover { color: var(--gold-600); }
+.catalog-admin .record-name small { color: var(--ink-400); font-size: 0.67rem; }
+.catalog-admin .desc { max-width: 440px; color: var(--ink-600); }
+.catalog-admin .numeric-cell { width: 115px; text-align: center; }
+.catalog-admin .product-count { color: var(--ink-900); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.catalog-admin .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid #d6eadc;
+  border-radius: 999px;
+  background: #edf7ef;
+  color: #286440;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.catalog-admin .badge.off {
+  border-color: #f0dddd;
+  background: #fbefef;
+  color: #9b4742;
+}
+
+.catalog-admin .parent-category,
+.catalog-admin .top-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-600);
+  font-size: 0.76rem;
+}
+
+.catalog-admin .parent-category i { color: var(--gold-600); }
+.catalog-admin .top-level { color: var(--ink-400); font-style: italic; }
+.catalog-admin .actions-heading { text-align: right; }
+
+.catalog-admin .actions {
+  width: 180px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.catalog-admin .actions button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+  padding: 0 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.catalog-admin .btn-edit {
+  margin-right: 0.4rem;
+  border-color: #e7e1d3 !important;
+  background: #fff !important;
+  color: var(--ink-900) !important;
+}
+
+.catalog-admin .btn-edit:hover { border-color: var(--gold-500) !important; background: #faf7ef !important; }
+.catalog-admin .btn-del { border-color: #f0dddd !important; background: #fff !important; color: #994d47 !important; }
+.catalog-admin .btn-del:hover:not(:disabled) { background: #fbefef !important; }
+.catalog-admin .actions button:disabled { cursor: not-allowed; opacity: 0.42; }
+
+.catalog-admin .empty-state {
+  height: 190px;
+  color: var(--ink-400);
+  text-align: center;
+}
+
+.catalog-admin .empty-state i,
+.catalog-admin .empty-state strong,
+.catalog-admin .empty-state span { display: block; }
+.catalog-admin .empty-state i { margin-bottom: 0.65rem; color: var(--gold-600); font-size: 1.5rem; }
+.catalog-admin .empty-state strong { margin-bottom: 0.25rem; color: var(--ink-900); font-size: 0.92rem; }
+.catalog-admin .empty-state span { font-size: 0.78rem; }
+
+.catalog-admin .catalog-loading {
+  display: flex;
+  min-height: 180px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  color: var(--ink-600);
+  font-size: 0.84rem;
+}
+
+.catalog-admin .loading-indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--line);
+  border-top-color: var(--gold-600);
+  border-radius: 50%;
+  animation: catalog-spin 0.7s linear infinite;
+}
+
+@keyframes catalog-spin { to { transform: rotate(360deg); } }
+
+.catalog-admin .backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.catalog-admin .dialog {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.catalog-admin .dialog h2 { margin: 0 0 1rem; font-size: 1.8rem; }
+.catalog-admin .dialog form { display: flex; flex-direction: column; gap: 0.9rem; }
+.catalog-admin .dialog label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.86rem; font-weight: 600; }
+.catalog-admin .dialog label.check { flex-direction: row; align-items: center; gap: 0.5rem; }
+
+.catalog-admin .dialog input:not([type='checkbox']),
+.catalog-admin .dialog textarea,
+.catalog-admin .dialog select {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink-900);
+  font: inherit;
+  font-weight: 400;
+}
+
+.catalog-admin .dialog input:focus,
+.catalog-admin .dialog textarea:focus,
+.catalog-admin .dialog select:focus {
+  border-color: var(--gold-600);
+  outline: 2px solid rgba(176, 141, 62, 0.18);
+}
+
+.catalog-admin .error { margin-top: -0.5rem; color: #b33c34; }
+.catalog-admin .dialog-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.4rem; }
+.catalog-admin .btn-cancel { padding: 0.55rem 0.9rem; border: 1px solid var(--line); border-radius: 2px; background: #fff; color: var(--ink-900); cursor: pointer; }
+
+@media (max-width: 700px) {
+  .catalog-admin { width: min(calc(100% - 1.25rem), 1440px); }
+  .catalog-admin .page-head { align-items: stretch; flex-direction: column; gap: 1.25rem; }
+  .catalog-admin .page-actions { justify-content: space-between; }
+  .catalog-admin .table-toolbar { padding: 0 0.85rem; }
+  .catalog-admin th,
+  .catalog-admin td { padding-right: 0.8rem; padding-left: 0.8rem; }
+}
+
+@media (max-width: 420px) {
+  .catalog-admin .record-count { font-size: 0.7rem; }
+  .catalog-admin .btn.primary.add-record { min-height: 40px; padding: 0 0.7rem; }
+  .catalog-admin .actions button { width: 34px; padding: 0; }
+  .catalog-admin .actions button span { display: none; }
+}
 
 .btn-primary {
   background: var(--gold-500);
@@ -45,3 +523,15 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; }
   cursor: pointer;
 }
 .btn-primary:hover { background: var(--gold-600); }
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-wrap {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+}

@@ -1,4 +1,4 @@
-import { Component, input, computed, HostListener, ElementRef, signal } from '@angular/core';
+import { Component, input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -16,47 +16,44 @@ import { Product } from '../../models/product';
 })
 export class ProductCard {
   product = input.required<Product>();
-  tiltStyle = signal('');
+  selectedImageIndex = signal(0);
 
-  private readonly fallbackImage = 'https://placehold.co/300x300?text=No+Image';
+  private readonly fallbackImage = 'https://placehold.co/600x600/f4f1e9/6f695d?text=Flux+Time';
 
-  imageUrl = computed(() => {
-    const images = this.product().images;
-    return images?.find(i => i.isPrimary)?.imageUrl
-        ?? images?.[0]?.imageUrl
-        ?? this.fallbackImage;
+  galleryImages = computed(() => {
+    const product = this.product();
+    if (product.images?.length) {
+      return [...product.images].sort((a, b) =>
+        Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
+      );
+    }
+
+    return product.imageUrl
+      ? [{ id: product.id, imageUrl: product.imageUrl, isPrimary: true, displayOrder: 0 }]
+      : [];
   });
+  imageUrl = computed(() =>
+    this.galleryImages()[this.selectedImageIndex()]?.imageUrl
+      ?? this.galleryImages()[0]?.imageUrl
+      ?? this.fallbackImage
+  );
 
   constructor(
     private cartService: CartService,
     private wishlistService: WishlistService,
     private authService: AuthService,
-    private toastr: ToastrService,
-    private el: ElementRef
+    private toastr: ToastrService
   ) {}
-
- @HostListener('mousemove', ['$event'])
-onMouseMove(e: MouseEvent): void {
-  const card = this.el.nativeElement.querySelector('.tilt-card');
-  if (!card) return;
-  const rect = card.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  const centerX = rect.width / 2;
-  const centerY = rect.height / 2;
-  const rotateX = ((y - centerY) / centerY) * -8;
-  const rotateY = ((x - centerX) / centerX) * 8;
-  this.tiltStyle.set(`transform: perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03);`);
-}
-
-@HostListener('mouseleave')
-onMouseLeave(): void {
-  this.tiltStyle.set('transform: perspective(800px) rotateX(0) rotateY(0) scale3d(1, 1, 1);');
-}
 
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = this.fallbackImage;
+  }
+
+  selectImage(index: number): void {
+    if (index >= 0 && index < this.galleryImages().length) {
+      this.selectedImageIndex.set(index);
+    }
   }
 
   addToCart(): void {

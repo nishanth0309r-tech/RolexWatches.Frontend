@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { routeFadeAnimation } from './animations/route-animations';
+import { Footer } from './components/footer/footer';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, Navbar],
+  imports: [RouterOutlet, CommonModule, Navbar, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css',
   animations: [routeFadeAnimation]
@@ -15,7 +16,7 @@ import { routeFadeAnimation } from './animations/route-animations';
 export class App {
   constructor(public router: Router) {}
 
-  getRouteAnimationData() {
+  getRouteAnimationData(): string {
     return this.router.url;
   }
 }

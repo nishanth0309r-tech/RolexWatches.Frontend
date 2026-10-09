@@ -39,6 +39,7 @@ export class ProductFormComponent implements OnInit {
       discountPrice: [null],
       stock: [0, [Validators.required, Validators.min(0)]],
       imageUrl: ['', Validators.required],
+      additionalImageUrls: [''],
       brandId: [null, Validators.required],
       categoryId: [null, Validators.required],
       isActive: [true]
@@ -53,7 +54,16 @@ export class ProductFormComponent implements OnInit {
     if (idParam) {
       this.isEditMode.set(true);
       this.productId = +idParam;
-      this.productService.getById(this.productId).subscribe(product => this.form.patchValue(product));
+      this.productService.getById(this.productId).subscribe(product => {
+        const images = [...(product.images ?? [])].sort((a, b) =>
+          Number(b.isPrimary) - Number(a.isPrimary) || a.displayOrder - b.displayOrder
+        );
+        this.form.patchValue({
+          ...product,
+          imageUrl: images[0]?.imageUrl ?? product.imageUrl ?? '',
+          additionalImageUrls: images.slice(1).map(image => image.imageUrl).join('\n')
+        });
+      });
     }
   }
 
@@ -62,13 +72,27 @@ export class ProductFormComponent implements OnInit {
       this.toastr.warning('Please fill all required fields');
       return;
     }
+    const { imageUrl, additionalImageUrls, ...productFields } = this.form.getRawValue();
+    const imageUrls = [imageUrl, ...additionalImageUrls.split(/\r?\n/)]
+      .map(url => url.trim())
+      .filter((url, index, allUrls) => url.length > 0 && allUrls.indexOf(url) === index);
+    const productPayload = {
+      ...productFields,
+      imageUrl: imageUrls[0],
+      images: imageUrls.map((url, displayOrder) => ({
+        imageUrl: url,
+        isPrimary: displayOrder === 0,
+        displayOrder
+      }))
+    };
+
     if (this.isEditMode() && this.productId) {
-      this.productService.update(this.productId, this.form.value).subscribe({
+      this.productService.update(this.productId, productPayload).subscribe({
         next: () => { this.toastr.success('Product updated successfully'); this.router.navigate(['/admin/products']); },
         error: () => this.toastr.error('Failed to update product')
       });
     } else {
-      this.productService.create(this.form.value).subscribe({
+      this.productService.create(productPayload).subscribe({
         next: () => { this.toastr.success('Product created successfully'); this.router.navigate(['/admin/products']); },
         error: () => this.toastr.error('Failed to create product')
       });
