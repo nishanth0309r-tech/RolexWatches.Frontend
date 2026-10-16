@@ -1,6 +1,6 @@
 import { Component, input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart';
 import { WishlistService } from '../../services/wishlist';
@@ -42,7 +42,8 @@ export class ProductCard {
     private cartService: CartService,
     private wishlistService: WishlistService,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   onImageError(event: Event): void {
@@ -63,7 +64,8 @@ export class ProductCard {
     }
     this.cartService.addToCart({ productId: this.product().id, quantity: 1 }).subscribe({
       next: () => this.toastr.success(`${this.product().name} added to cart!`),
-      error: () => this.toastr.error('Could not add item to cart.')
+      error: () => this.toastr.error('Could not add item to cart.'),
+      complete: () => this.router.navigate(['/cart'])
     });
   }
 
@@ -74,7 +76,8 @@ export class ProductCard {
     }
     this.wishlistService.addToWishlist({ productId: this.product().id }).subscribe({
       next: () => this.toastr.success(`${this.product().name} added to wishlist!`),
-      error: () => this.toastr.error('Could not add item to wishlist.')
+      error: () => this.toastr.error('Could not add item to wishlist.'),
+      complete: () => this.router.navigate(['/wishlist'])
     });
   }
 }

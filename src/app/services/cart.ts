@@ -7,6 +7,7 @@ import { CartItem, AddToCartRequest } from '../models/cart.model';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
+
   private apiUrl = `${environment.apiUrl}/Cart`;
   private localCart: CartItem[] = [];
   private nextLocalId = 1000;
