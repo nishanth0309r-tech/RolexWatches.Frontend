@@ -7,6 +7,7 @@ import { CartService } from '../../services/cart';
 import { OrderService } from '../../services/order-service';
 import { CartItem } from '../../models/cart.model';
 import { map, switchMap } from 'rxjs';
+import { PaymentService } from '../../services/payment-service';
 
 @Component({
   selector: 'app-checkout',
@@ -18,28 +19,31 @@ export class Checkout implements OnInit {
   private fb = inject(FormBuilder);
   private cartService = inject(CartService);
   private orderService = inject(OrderService);
+  private paymentService = inject(PaymentService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-  singleItem = signal(false);
   private route = inject(ActivatedRoute);
+
+  singleItem = signal(false);
   items = signal<CartItem[]>([]);
   loading = signal(true);
   submitting = signal(false);
   total = computed(() => this.items().reduce((sum, i) => sum + i.price * i.quantity, 0));
 
   form = this.fb.nonNullable.group({
-    shippingAddress: ['', [Validators.required, Validators.maxLength(300)]]
+    shippingAddress: ['', [Validators.required, Validators.maxLength(300)]],
+    paymentMethod: ['online' as 'online' | 'cod']        // new
   });
 
   ngOnInit(): void {
-  this.route.queryParamMap.pipe(
-    switchMap(params => {
-      const itemId = Number(params.get('item'));
-      return this.cartService.getCart().pipe(
-        map(items => ({ items, itemId }))
-      );
-    })
-  ).subscribe(({ items, itemId }) => {
+    this.route.queryParamMap.pipe(
+      switchMap(params => {
+        const itemId = Number(params.get('item'));
+        return this.cartService.getCart().pipe(
+          map(items => ({ items, itemId }))
+        );
+      })
+    ).subscribe(({ items, itemId }) => {
       const selected = itemId ? items.filter(i => i.id === itemId) : items;
       this.items.set(selected);
       this.singleItem.set(!!itemId);
@@ -58,10 +62,37 @@ export class Checkout implements OnInit {
       shippingAddress: this.form.controls.shippingAddress.value,
       items: this.items().map(i => ({ productId: i.productId, quantity: i.quantity }))
     }).subscribe({
-      next: order => this.router.navigate(['/payment', order.id]),
+      next: order => this.form.controls.paymentMethod.value === 'cod'
+        ? this.startCod(order.id)
+        : this.startPayment(order.id),
       error: err => {
         this.submitting.set(false);
         this.toastr.error(err?.error?.message ?? 'Could not place your order.', 'Checkout failed');
+      }
+    });
+  }
+
+  private startPayment(orderId: number): void {
+    this.paymentService.createCheckoutSession(orderId).subscribe({
+      next: res => window.location.href = res.url,   // leave the page; submitting stays true
+      error: err => {
+        this.submitting.set(false);
+        this.toastr.error(err?.error?.message ?? 'Could not start payment. You can pay from My Orders.');
+        this.router.navigate(['/orders']);           // the order exists as Pending, so the user can retry
+      }
+    });
+  }
+
+  private startCod(orderId: number): void {          // new
+    this.paymentService.confirmCod(orderId).subscribe({
+      next: () => {
+        this.toastr.success('Order placed. You can pay in cash on delivery.');
+        this.router.navigate(['/orders']);
+      },
+      error: err => {
+        this.submitting.set(false);
+        this.toastr.error(err?.error?.message ?? 'Could not confirm cash on delivery.');
+        this.router.navigate(['/orders']);           // still Pending, so the user can pay online instead
       }
     });
   }

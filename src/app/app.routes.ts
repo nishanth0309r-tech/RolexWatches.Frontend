@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
+
 export const appRoutes: Routes = [
   // ---- Public ----
   { path: 'home', loadComponent: () => import('./components/home/home').then(m => m.Home) },
@@ -21,6 +22,7 @@ export const appRoutes: Routes = [
   { path: 'cart', canActivate: [authGuard], loadComponent: () => import('./components/cart/cart').then(m => m.Cart) },
   { path: 'wishlist', canActivate: [authGuard], loadComponent: () => import('./components/wishlist/wishlist').then(m => m.Wishlist) },
   { path: 'orders', canActivate: [authGuard], loadComponent: () => import('./components/orders/orders').then(m => m.Orders) },
+  { path: 'order-success', canActivate: [authGuard],loadComponent:()=>import('./components/order-success/order-success').then(m=>m.OrderSuccess) },
 
   // ---- Admin only: one guard on the parent covers every child ----
   {

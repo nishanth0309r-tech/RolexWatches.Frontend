@@ -83,7 +83,12 @@
             <div class="order-total">
               <span><small>ORDER TOTAL</small><strong>{{ order.totalAmount | currency }}</strong></span>
               @if (statusLabel(order.status) === 'Pending') {
-                <a [routerLink]="['/payment', order.id]" class="pay-link">Complete payment <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                <button type="button" class="pay-link"
+                    [disabled]="payingId() !== null"
+                    (click)="payNow(order.id)">
+                    {{ payingId() === order.id ? 'Redirecting…' : 'Complete payment' }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </button>
               }
             </div>
           </footer>

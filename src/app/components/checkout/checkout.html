@@ -1,46 +1,100 @@
-<section class="page">
-  <h1>Checkout</h1>
+<main class="checkout-page">
+  <header class="checkout-heading">
+    <span class="eyebrow">FLUX TIME · SECURE CHECKOUT</span>
+    <h1>Complete your order</h1>
+    <p>Tell us where to deliver your timepiece.</p>
+    <div class="checkout-steps" aria-label="Checkout progress">
+      <span class="step active"><span>1</span> Delivery</span>
+      <span class="step-divider" aria-hidden="true"></span>
+      <span class="step"><span>2</span> Payment</span>
+    </div>
+  </header>
 
   @if (loading()) {
-    <p>Loading…</p>
+    <div class="checkout-loading" role="status">
+      <span class="loading-mark"><i class="bi bi-watch" aria-hidden="true"></i></span>
+      <p>Preparing your checkout…</p>
+    </div>
   } @else if (items().length === 0) {
     <div class="empty">
-      <p>Your cart is empty.</p>
-      <a routerLink="/product-list" class="btn">Browse watches</a>
+      <span class="section-index">YOUR BAG IS EMPTY</span>
+      <p>There are no watches ready for checkout.</p>
+      <a routerLink="/product-list" class="action-link">Browse watches <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
     </div>
   } @else {
-    <div class="checkout-grid">
-      <form [formGroup]="form" (ngSubmit)="placeOrder()">
-        @if (singleItem()) {
-          <p class="note">
-            Ordering the selected item only.
-            <a routerLink="/checkout">Order all items instead</a>
-          </p>
-        }
+    <div class="checkout-layout">
+      <section class="shipping-card">
+        <div class="section-heading">
+          <div>
+            <span class="section-index">01</span>
+            <h2>Delivery details</h2>
+          </div>
+          <span class="secure-note"><i class="bi bi-shield-check" aria-hidden="true"></i> Insured delivery</span>
+        </div>
 
-        <label for="address">Shipping address</label>
-        <textarea id="address" rows="4" formControlName="shippingAddress"></textarea>
-        @if (form.controls.shippingAddress.touched && form.controls.shippingAddress.invalid) {
-          <small class="error">Please enter your shipping address.</small>
-        }
-        <button type="submit" class="btn primary" [disabled]="submitting()">
-          {{ submitting() ? 'Placing order…' : 'Place order' }}
-        </button>
-      </form>
+        <form [formGroup]="form" (ngSubmit)="placeOrder()">
+          @if (singleItem()) {
+            <p class="note">
+              Ordering the selected item only.
+              <a routerLink="/checkout">Order all items instead</a>
+            </p>
+          }
 
-      <aside class="summary-card">
-        <h3>{{ singleItem() ? 'Selected item' : 'Order summary' }}</h3>
+          <label class="address-field" for="address">
+            Shipping address
+            <span class="field-hint">Enter the address where your order should be delivered.</span>
+            <textarea id="address" rows="4" formControlName="shippingAddress" autocomplete="street-address"></textarea>
+          </label>
+          @if (form.controls.shippingAddress.touched && form.controls.shippingAddress.invalid) {
+            <small class="error">Please enter your shipping address.</small>
+          }
+
+          <fieldset class="payment-methods">
+            <legend>Payment method</legend>
+            <label class="method-option" [class.selected]="form.controls.paymentMethod.value === 'online'">
+              <input type="radio" value="online" formControlName="paymentMethod" />
+              <span class="method-icon"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>Pay online</strong><small>Secure card payment</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
+            <label class="method-option" [class.selected]="form.controls.paymentMethod.value === 'cod'">
+              <input type="radio" value="cod" formControlName="paymentMethod" />
+              <span class="method-icon"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+              <span class="method-copy"><strong>Cash on delivery</strong><small>Pay when your order arrives</small></span>
+              <i class="bi bi-check-circle-fill method-check" aria-hidden="true"></i>
+            </label>
+          </fieldset>
+
+          <button type="submit" class="continue-button" [disabled]="submitting()">
+            <span>
+              @if (submitting()) {
+                {{ form.controls.paymentMethod.value === 'cod' ? 'Placing order…' : 'Redirecting to payment…' }}
+              } @else {
+                {{ form.controls.paymentMethod.value === 'cod' ? 'Place order' : 'Place order & pay' }}
+              }
+            </span>
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+      </section>
+
+      <aside class="summary-card" aria-label="Order summary">
+        <span class="section-index">{{ singleItem() ? 'SELECTED ITEM' : 'ORDER SUMMARY' }}</span>
+        <h2>{{ singleItem() ? 'Your timepiece' : 'Your selection' }}</h2>
         @for (item of items(); track item.id) {
           <div class="sum-row">
-            <span>{{ item.productName }} × {{ item.quantity }}</span>
-            <span>{{ item.price * item.quantity | currency }}</span>
+            <span>{{ item.productName }} <span class="quantity">× {{ item.quantity }}</span></span>
+            <strong>{{ item.price * item.quantity | currency }}</strong>
           </div>
         }
-        <div class="sum-row total">
-          <span>Total</span>
+        <div class="summary-divider"></div>
+        <div class="order-total">
+          <span>Total due</span>
           <strong>{{ total() | currency }}</strong>
         </div>
+        <p class="delivery-note"><i class="bi bi-box-seam" aria-hidden="true"></i> Complimentary insured delivery</p>
+        <div class="payment-assurance"><i class="bi bi-lock-fill" aria-hidden="true"></i> Your order details are protected</div>
       </aside>
     </div>
   }
-</section>
+</main>

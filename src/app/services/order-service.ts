@@ -28,5 +28,9 @@ export class OrderService {
   return this.http.get<MyOrder[]>(`${this.customerUrl}/my-orders`);
   }
 
+    getById(id: number) {
+  return this.http.get<MyOrder>(`${this.customerUrl}/${id}`);   // match your backend route
+}
+
   
 }

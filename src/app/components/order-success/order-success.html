@@ -1,0 +1,13 @@
+<section class="page">
+  @switch (status()) {
+    @case ('Checking') { <p>Confirming your payment…</p> }
+    @case ('Pending') {
+      <p>We're still confirming your payment. Check <a routerLink="/orders">My Orders</a> in a moment.</p>
+    }
+    @default {
+      <h1>Payment successful 🎉</h1>
+      <p>Your order is being processed.</p>
+      <a routerLink="/orders" class="btn">View my orders</a>
+    }
+  }
+</section>

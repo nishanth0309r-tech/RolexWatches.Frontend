@@ -311,3 +311,17 @@
   .loading-order > span,
   .loading-indicator { animation: none; transition: none; }
 }
+
+
+
+
+
+button.pay-link {
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+button.pay-link:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
